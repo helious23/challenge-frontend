@@ -3,7 +3,7 @@ import { PageTitle } from "../components/page-title";
 import routes from "../routes";
 
 export const NotFound: React.FC = () => (
-  <div className="mt-64 flex flex-col items-center justify-center">
+  <div className="mt-80 flex flex-col items-center justify-center">
     <PageTitle title={"페이지를 찾을 수 없습니다"} />
     <h2 className="font-semibold text-2xl mb-3">페이지를 찾을 수 없습니다</h2>
     <h4 className="font-medium text-base mb-5">

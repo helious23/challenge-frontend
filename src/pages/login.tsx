@@ -2,17 +2,17 @@ import { useForm } from "react-hook-form";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
 import { FormError } from "../components/form-error";
-import { Logo } from "./logo";
+import { Logo } from "../components/logo";
 import podbang from "../images/podbang.png";
 import {
   loginMutation,
   loginMutationVariables,
 } from "../__generated__/loginMutation";
-import { Button } from "./button";
 import { Link, useLocation } from "react-router-dom";
 import routes from "../routes";
 import { PageTitle } from "../components/page-title";
 import { logUserIn } from "../apollo";
+import { Button } from "../components/button";
 
 const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {

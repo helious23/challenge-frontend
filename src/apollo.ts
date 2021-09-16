@@ -24,6 +24,7 @@ export const logUserOut = () => {
 
 const httpLink = createHttpLink({
   uri: "https://nuber-eats-challenge-back.herokuapp.com/graphql",
+  // uri: "http://localhost:4000/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {

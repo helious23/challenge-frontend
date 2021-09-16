@@ -2,13 +2,14 @@ import { useForm } from "react-hook-form";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
 import { FormError } from "../components/form-error";
-import { Logo } from "./logo";
+import { Logo } from "../components/logo";
 import podbang from "../images/podbang.png";
-import { Button } from "./button";
+
 import { Link, useHistory } from "react-router-dom";
 import routes from "../routes";
 import { PageTitle } from "../components/page-title";
 import { UserRole } from "../__generated__/globalTypes";
+import { Button } from "../components/button";
 import {
   createAccountMutation,
   createAccountMutationVariables,

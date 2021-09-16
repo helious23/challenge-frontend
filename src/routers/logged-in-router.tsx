@@ -1,24 +1,29 @@
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/client";
-import { Logo } from "../pages/logo";
+import { Logo } from "../components/logo";
 import spinner from "../images/spinner.svg";
-import { meQuery } from "../__generated__/meQuery";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { UserRole } from "../__generated__/globalTypes";
 import routes from "../routes";
 import { Header } from "../components/header";
 import { NotFound } from "../pages/404";
 import { Podcasts } from "../pages/clients/podcasts";
+import { Search } from "../pages/clients/search";
 import { useMe } from "../hooks/useMe";
+import { EditProfile } from "../pages/user/edit-profile";
+import { EditPassword } from "../pages/user/edit-password";
 
-const clientRoutes = [{ path: routes.home, component: <Podcasts /> }];
+const clientRoutes = [
+  { path: routes.home, component: <Podcasts /> },
+  { path: routes.editProfile, component: <EditProfile /> },
+  { path: routes.editPassword, component: <EditPassword /> },
+  { path: routes.search, component: <Search /> },
+];
 
 export const LoggedInRouter = () => {
   const { data, loading, error } = useMe();
   if (!data || loading || error) {
     return (
       <div className="mt-64 flex justify-center items-center">
-        <Logo logoFile={spinner} option={"w-64 mr-10"} />
+        <Logo logoFile={spinner} option={"w-32 mr-10"} />
       </div>
     );
   }

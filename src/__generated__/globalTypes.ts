@@ -18,9 +18,21 @@ export interface CreateAccountInput {
   role?: UserRole | null;
 }
 
+export interface EditPasswordInput {
+  password?: string | null;
+}
+
+export interface EditProfileInput {
+  email?: string | null;
+}
+
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+export interface PodcastsInput {
+  page?: number | null;
 }
 
 //==============================================================
