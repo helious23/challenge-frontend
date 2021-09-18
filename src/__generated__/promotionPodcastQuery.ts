@@ -3,8 +3,6 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { PodcastsInput } from "./globalTypes";
-
 // ====================================================
 // GraphQL query operation: promotionPodcastQuery
 // ====================================================
@@ -25,8 +23,4 @@ export interface promotionPodcastQuery_promotionPocasts {
 
 export interface promotionPodcastQuery {
   promotionPocasts: promotionPodcastQuery_promotionPocasts;
-}
-
-export interface promotionPodcastQueryVariables {
-  input: PodcastsInput;
 }

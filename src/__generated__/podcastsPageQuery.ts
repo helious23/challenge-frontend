@@ -28,6 +28,7 @@ export interface podcastsPageQuery_allCategories {
 export interface podcastsPageQuery_podcasts_results_category {
   __typename: "Category";
   name: string;
+  slug: string;
 }
 
 export interface podcastsPageQuery_podcasts_results {
@@ -35,8 +36,8 @@ export interface podcastsPageQuery_podcasts_results {
   id: number;
   title: string;
   coverImg: string;
-  category: podcastsPageQuery_podcasts_results_category | null;
   description: string | null;
+  category: podcastsPageQuery_podcasts_results_category | null;
 }
 
 export interface podcastsPageQuery_podcasts {

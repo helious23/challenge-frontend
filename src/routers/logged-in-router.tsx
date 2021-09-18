@@ -10,12 +10,18 @@ import { Search } from "../pages/clients/search";
 import { useMe } from "../hooks/useMe";
 import { EditProfile } from "../pages/user/edit-profile";
 import { EditPassword } from "../pages/user/edit-password";
+import { Category } from "../pages/clients/category";
+import { PodcastDetail } from "../pages/clients/podcast-detail";
+import { Episode } from "../pages/clients/episode";
 
 const clientRoutes = [
   { path: routes.home, component: <Podcasts /> },
   { path: routes.editProfile, component: <EditProfile /> },
   { path: routes.editPassword, component: <EditPassword /> },
   { path: routes.search, component: <Search /> },
+  { path: routes.category, component: <Category /> },
+  { path: routes.podcast, component: <PodcastDetail /> },
+  { path: routes.episode, component: <Episode /> },
 ];
 
 export const LoggedInRouter = () => {
@@ -23,7 +29,7 @@ export const LoggedInRouter = () => {
   if (!data || loading || error) {
     return (
       <div className="mt-64 flex justify-center items-center">
-        <Logo logoFile={spinner} option={"w-32 mr-10"} />
+        <Logo logoFile={spinner} option={"w-32"} />
       </div>
     );
   }

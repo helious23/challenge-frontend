@@ -12,6 +12,19 @@ export enum UserRole {
   Listener = "Listener",
 }
 
+export interface CategoryInput {
+  page?: number | null;
+  slug: string;
+}
+
+export interface CountLikesInput {
+  id: number;
+}
+
+export interface CountSubscriptionsInput {
+  id: number;
+}
+
 export interface CreateAccountInput {
   email?: string | null;
   password?: string | null;
@@ -31,8 +44,21 @@ export interface LoginInput {
   password: string;
 }
 
+export interface PodcastSearchInput {
+  id: number;
+}
+
 export interface PodcastsInput {
   page?: number | null;
+}
+
+export interface SearchPodcastsInput {
+  page?: number | null;
+  titleQuery: string;
+}
+
+export interface ToggleSubscribeInput {
+  podcastId: number;
 }
 
 //==============================================================

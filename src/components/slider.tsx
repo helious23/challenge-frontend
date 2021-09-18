@@ -7,20 +7,22 @@ interface ISliderProps {
 }
 
 export const PromitionSlider: React.FC<ISliderProps> = ({ results }) => {
-  function SampleNextArrow(props: any) {
+  function NextArrow(props: any) {
     return (
       <div
-        {...props}
-        className="xl:w-1/3 xl:h-72 xl:bg-gradient-to-r from-transparent to-white absolute top-0 right-0 cursor-pointer"
+        style={props.style}
+        onClick={props.onClick}
+        className="xl:w-1/4 xl:h-80 xl:bg-gradient-to-r from-transparent to-white absolute top-0 right-0 cursor-pointer"
       ></div>
     );
   }
 
-  function SamplePrevArrow(props: any) {
+  function PrevArrow(props: any) {
     return (
       <div
-        {...props}
-        className="xl:w-1/3 xl:h-72 xl:bg-gradient-to-r from-white to-transparent absolute top-0 left-0 z-10 cursor-pointer"
+        style={props.style}
+        onClick={props.onClick}
+        className="xl:w-1/4 xl:h-80 xl:bg-gradient-to-r from-white to-transparent absolute top-0 left-0 z-10 cursor-pointer"
       ></div>
     );
   }
@@ -33,8 +35,8 @@ export const PromitionSlider: React.FC<ISliderProps> = ({ results }) => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
     responsive: [
       {
         breakpoint: 1024,

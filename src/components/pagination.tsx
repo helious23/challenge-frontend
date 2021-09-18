@@ -20,11 +20,13 @@ export const Pagination: React.FC<IPagenationProps> = ({
   return (
     <div className="grid grid-cols-2 gap-2 text-center max-w-md mx-auto">
       {page > 1 ? (
-        <div className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pr-0.5 transform hover:-translate-y-1 transition-transform">
+        <div
+          onClick={onPrevPageClick}
+          className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pr-0.5 transform hover:-translate-y-1 transition-transform cursor-pointer"
+        >
           <FontAwesomeIcon
             icon={faChevronLeft}
-            className="focus:outline-none text-xl text-sky-600 cursor-pointer"
-            onClick={onPrevPageClick}
+            className="focus:outline-none text-xl text-sky-600 "
           />
         </div>
       ) : (
@@ -36,11 +38,13 @@ export const Pagination: React.FC<IPagenationProps> = ({
         </div>
       )}
       {page !== totalPages ? (
-        <div className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pl-0.5 transform hover:-translate-y-1 transition-transform">
+        <div
+          onClick={onNextPageClick}
+          className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pl-0.5 transform hover:-translate-y-1 transition-transform cursor-pointer"
+        >
           <FontAwesomeIcon
             icon={faChevronRight}
-            className="focus:outline-none text-xl text-sky-600 cursor-pointer"
-            onClick={onNextPageClick}
+            className="focus:outline-none text-xl text-sky-600"
           />
         </div>
       ) : (
