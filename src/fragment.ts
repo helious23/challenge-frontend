@@ -19,7 +19,7 @@ export const CATEGORY_FRAGMENT = gql`
     name
     coverImg
     slug
-    categoryCount
+    podcastCount
   }
 `;
 

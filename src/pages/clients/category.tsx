@@ -21,7 +21,7 @@ const CATEGORY_QUERY = gql`
         ...PodcastParts
       }
       category {
-        categoryCount
+        podcastCount
       }
     }
     allCategories {
@@ -115,7 +115,7 @@ export const Category = () => {
           <div className="flex justify-between items-center mx-8 mt-10">
             <div className="cursor-default">
               <span className="text-xl text-sky-400">
-                {data?.category.category?.categoryCount}
+                {data?.category.category?.podcastCount}
               </span>{" "}
               <span className="text-gray-500">개의 팟캐스트</span>
             </div>

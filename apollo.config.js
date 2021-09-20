@@ -5,7 +5,7 @@ module.exports = {
     service: {
       name: "nubereats-challenge-backend",
       url: "https://nuber-eats-challenge-back.herokuapp.com/graphql",
-      // url:"http://localhost:4000/graphql"
+      // url: "http://localhost:4000/graphql",
     },
   },
 };

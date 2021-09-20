@@ -31,6 +31,16 @@ export interface CreateAccountInput {
   role?: UserRole | null;
 }
 
+export interface CreateReviewInput {
+  title: string;
+  text: string;
+  podcastId: number;
+}
+
+export interface DeleteReviewInput {
+  id: number;
+}
+
 export interface EditPasswordInput {
   password?: string | null;
 }
@@ -55,6 +65,10 @@ export interface PodcastsInput {
 export interface SearchPodcastsInput {
   page?: number | null;
   titleQuery: string;
+}
+
+export interface ToggleLikeInput {
+  podcastId: number;
 }
 
 export interface ToggleSubscribeInput {

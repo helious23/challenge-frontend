@@ -15,7 +15,7 @@ export interface podcastsPageQuery_allCategories_categories {
   name: string;
   coverImg: string;
   slug: string;
-  categoryCount: number;
+  podcastCount: number;
 }
 
 export interface podcastsPageQuery_allCategories {

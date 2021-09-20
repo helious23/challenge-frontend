@@ -26,7 +26,7 @@ export interface category_category_podcasts {
 
 export interface category_category_category {
   __typename: "Category";
-  categoryCount: number;
+  podcastCount: number;
 }
 
 export interface category_category {
@@ -45,7 +45,7 @@ export interface category_allCategories_categories {
   name: string;
   coverImg: string;
   slug: string;
-  categoryCount: number;
+  podcastCount: number;
 }
 
 export interface category_allCategories {

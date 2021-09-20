@@ -13,5 +13,5 @@ export interface CategoryParts {
   name: string;
   coverImg: string;
   slug: string;
-  categoryCount: number;
+  podcastCount: number;
 }
