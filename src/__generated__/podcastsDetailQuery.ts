@@ -31,6 +31,7 @@ export interface podcastsDetailQuery_getPodcast_podcast_episodes {
 
 export interface podcastsDetailQuery_getPodcast_podcast_reviews_reviewer {
   __typename: "User";
+  id: number;
   email: string;
 }
 

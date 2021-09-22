@@ -13,6 +13,8 @@ import { EditPassword } from "../pages/user/edit-password";
 import { Category } from "../pages/clients/category";
 import { PodcastDetail } from "../pages/clients/podcast-detail";
 import { Episode } from "../pages/clients/episode";
+import { Subscriptions } from "../pages/clients/subscriptions";
+import { Likes } from "../pages/clients/likes";
 
 const clientRoutes = [
   { path: routes.home, component: <Podcasts /> },
@@ -22,6 +24,8 @@ const clientRoutes = [
   { path: routes.category, component: <Category /> },
   { path: routes.podcast, component: <PodcastDetail /> },
   { path: routes.episode, component: <Episode /> },
+  { path: routes.subscriptions, component: <Subscriptions /> },
+  { path: routes.likes, component: <Likes /> },
 ];
 
 export const LoggedInRouter = () => {

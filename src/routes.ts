@@ -8,6 +8,8 @@ const routes = {
   category: "/category/:slug",
   podcast: "/podcast/:id",
   episode: "/podcast/:id/episode/:episodeId",
+  subscriptions: "/subscriptions",
+  likes: "/likes",
 };
 
 export default routes;

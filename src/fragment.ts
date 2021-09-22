@@ -40,6 +40,7 @@ export const REVIEW_FRAGMENT = gql`
     title
     text
     reviewer {
+      id
       email
     }
   }

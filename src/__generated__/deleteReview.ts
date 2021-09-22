@@ -13,7 +13,7 @@ export interface deleteReview_deleteReview {
   __typename: "DeleteReviewOutput";
   ok: boolean;
   error: string | null;
-  reviewId: number;
+  id: number;
 }
 
 export interface deleteReview {

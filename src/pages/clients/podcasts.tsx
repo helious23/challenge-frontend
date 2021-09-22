@@ -92,7 +92,7 @@ export const Podcasts = () => {
               </div>
               <div
                 className={
-                  "flex justify-start overflow-x-auto md:justify-around scrollbar-hide"
+                  "flex justify-start overflow-x-auto lg:justify-around scrollbar-hide"
                 }
               >
                 {data?.allCategories.categories?.map((category) => (

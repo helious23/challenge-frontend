@@ -46,17 +46,16 @@ const DELETE_REVIEW_MUTATION = gql`
     deleteReview(input: $input) {
       ok
       error
-      reviewId
+      id
     }
   }
 `;
 
 export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
-  const { register, formState, handleSubmit, getValues } = useForm<IReviewForm>(
-    {
+  const { register, formState, handleSubmit, getValues, reset } =
+    useForm<IReviewForm>({
       mode: "all",
-    }
-  );
+    });
   const { data: userData } = useMe();
   const client = useApolloClient();
 
@@ -80,7 +79,7 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
           },
         },
       });
-
+      console.log(reviewResults);
       if (reviewResults) {
         client.writeQuery({
           query: PODCAST_QUERY,
@@ -101,18 +100,19 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
               podcast: {
                 ...reviewResults.getPodcast.podcast,
                 reviews: [
+                  ...reviewResults.getPodcast.podcast.reviews,
                   {
                     createdAt: new Date().toISOString(),
                     id: reviewId,
                     reviewer: {
                       email: userData?.me.email,
+                      id: userData?.me.id,
                       __typename: "User",
                     },
                     text,
                     title,
                     __typename: "Review",
                   },
-                  ...reviewResults.getPodcast.podcast.reviews,
                 ],
               },
             },
@@ -125,12 +125,15 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
           },
         });
       }
+      if (formState.isSubmitSuccessful) {
+        reset({ text: "", title: "" });
+      }
     }
   };
 
   const onDeleteCompleted = (data: deleteReview) => {
     const {
-      deleteReview: { ok, reviewId },
+      deleteReview: { ok, id: reviewId },
     } = data;
     if (ok) {
       const reviewResults = client.readQuery({
@@ -164,9 +167,7 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
           },
           data: {
             getPodcast: {
-              ...reviewResults.getPodcast,
               podcast: {
-                ...reviewResults.getPodcast.podcast,
                 reviews: reviewResults.getPodcast.podcast.reviews.filter(
                   (review: IReview) => review.id !== reviewId
                 ),
@@ -232,7 +233,7 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
         <input
           placeholder="제목을 입력해주세요"
           type="text"
-          className="py-2 px-2 bg-gray-100 rounded-lg outline-none text-gray-700 text-base"
+          className="py-2 px-2 bg-gray-100 rounded-lg outline-none text-gray-700 text-base focus:border-sky-400 border border-transparent transition-colors"
           {...register("title")}
         />
         {formState.errors.title?.message && (
@@ -240,7 +241,7 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
         )}
         <textarea
           placeholder="댓글을 입력해주세요"
-          className="py-2 px-2 h-24 bg-gray-100 rounded-lg outline-none text-gray-700 font-extralight"
+          className="py-2 px-2 h-24 bg-gray-100 rounded-lg outline-none text-gray-700 font-extralight focus:border-sky-400 border border-transparent transition-colors resize-none"
           {...register("text")}
         />
         {formState.errors.text?.message && (
@@ -248,11 +249,11 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
         )}
         <div className="flex justify-end">
           <button
-            className={`py-1 text-sm bg-sky-500 rounded-3xl text-white text-center w-20`}
+            className={`py-1 text-sm bg-sky-500 rounded-3xl text-white text-center w-20 outline-none hover:bg-sky-600 transition-colors`}
           >
             {loading ? (
               <div className="flex justify-center">
-                <Logo logoFile={btnSpinner} option={"w-5"} />
+                <Logo logoFile={btnSpinner} option={"w-5 h-5"} />
               </div>
             ) : (
               "등록"
@@ -268,47 +269,53 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
       </form>
       <div className="border-t border-gray-200 w-full mt-2"></div>
       <div className="mt-5">
-        {podcastData?.getPodcast.podcast?.reviews.map((review, index) => (
-          <div key={index} className="mt-5 mx-2">
-            <div className="flex justify-between w-full">
-              <div className="flex items-center justify-center">
-                <div className="flex mr-5 text-sm">
-                  <div className="text-sky-600">
-                    {review.reviewer?.email.split("@")[0]}
+        {podcastData?.getPodcast.podcast?.reviews
+          .map((review, index) => (
+            <div key={index} className="mt-5 mx-2">
+              <div className="flex justify-between w-full">
+                <div className="flex items-center justify-center">
+                  <div className="flex mr-5 text-sm">
+                    <div className="text-sky-600">
+                      {review.reviewer?.email.split("@")[0]}
+                    </div>
+                    <span className="ml-2 text-gray-600">님</span>
                   </div>
-                  <span className="ml-2 text-gray-600">님</span>
+                </div>
+                <div className="flex items-center text-xs text-gray-400">
+                  <div>{review.createdAt.split("T")[0]}</div>
+                  <div className="ml-1">
+                    {+review.createdAt.split("T")[1].split(":")[0] + 9}:
+                    {review.createdAt.split("T")[1].split(":")[1]}
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center text-xs text-gray-400">
-                <div>{review.createdAt.split("T")[0]}</div>
-                <div className="ml-1">
-                  {+review.createdAt.split("T")[1].split(":")[0] + 9}:
-                  {review.createdAt.split("T")[1].split(":")[1]}
+              <div className="flex justify-between">
+                <div className="mt-0.5 text-base text-gray-700">
+                  {review.title}
                 </div>
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <div className="mt-0.5 text-base text-gray-700">
-                {review.title}
-              </div>
-              <div onClick={() => onDeleteReview(review.id)}>
-                <FontAwesomeIcon
-                  icon={["far", "trash-alt"]}
-                  className="text-sm text-gray-400 hover:text-gray-700 cursor-pointer"
-                />
-                {deleteMutationResult?.deleteReview.error && (
-                  <FormError
-                    errorMessage={deleteMutationResult.deleteReview.error}
-                    options={"text-sm"}
-                  />
+                {review.reviewer?.id === userData?.me.id && (
+                  <div onClick={() => onDeleteReview(review.id)}>
+                    <FontAwesomeIcon
+                      icon={["far", "trash-alt"]}
+                      className="text-sm text-gray-400 hover:text-gray-700 cursor-pointer"
+                    />
+                    {deleteMutationResult?.deleteReview.error && (
+                      <FormError
+                        errorMessage={deleteMutationResult.deleteReview.error}
+                        options={"text-sm"}
+                      />
+                    )}
+                  </div>
                 )}
               </div>
+              <div className="mt-2 py-2 px-2 bg-gray-100 rounded-lg">
+                <div className="font-extralight text-gray-700">
+                  {review.text}
+                </div>
+              </div>
             </div>
-            <div className="mt-2 py-2 px-2 bg-gray-100 rounded-lg">
-              <div className="font-extralight text-gray-700">{review.text}</div>
-            </div>
-          </div>
-        ))}
+          ))
+          .reverse()}
       </div>
     </div>
   );

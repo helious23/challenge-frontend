@@ -13,6 +13,7 @@ module.exports = {
   variants: {
     extend: {
       fontWeight: ["hover"],
+      translate: ["group-hover"],
     },
   },
   plugins: [require("tailwind-scrollbar-hide")],

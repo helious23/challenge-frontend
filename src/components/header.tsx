@@ -51,12 +51,28 @@ export const Header: React.FC = () => {
           <div className="hover:font-bold text-gray-700 cursor-pointer text-lg lg:text-xl font-medium border-b-4 border-transparent px-2 lg:mx-0 text-center">
             순위
           </div>
-          <div className="hover:font-bold text-gray-700 cursor-pointer text-lg lg:text-xl font-medium border-b-4 border-transparent px-2 lg:mx-0 text-center">
-            매거진
-          </div>
-          <div className="hover:font-bold text-gray-700 cursor-pointer text-lg lg:text-xl font-medium border-b-4 border-transparent px-2 lg:mx-0 text-center">
-            오디오북
-          </div>
+          <Link to={routes.subscriptions}>
+            <div
+              className={` hover:font-bold text-gray-700 cursor-pointer text-lg lg:text-xl font-medium border-b-4 border-transparent px-2 lg:mx-0 text-center ${
+                pathName === routes.subscriptions
+                  ? "text-sky-500  border-sky-500 transition-colors pb-1 lg:pb-0 lg:border-transparent text-center"
+                  : ""
+              }`}
+            >
+              구독
+            </div>
+          </Link>
+          <Link to={routes.likes}>
+            <div
+              className={` hover:font-bold text-gray-700 cursor-pointer text-lg lg:text-xl font-medium border-b-4 border-transparent px-2 lg:mx-0 text-center ${
+                pathName === routes.likes
+                  ? "text-sky-500  border-sky-500 transition-colors pb-1 lg:pb-0 lg:border-transparent text-center"
+                  : ""
+              }`}
+            >
+              좋아요
+            </div>
+          </Link>
           <Link to={routes.search}>
             <div
               className={` hover:font-bold text-gray-700 cursor-pointer text-lg lg:text-xl font-medium border-b-4 border-transparent px-2 lg:mx-0 text-center ${

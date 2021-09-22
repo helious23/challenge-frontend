@@ -9,6 +9,7 @@
 
 export interface ReviewParts_reviewer {
   __typename: "User";
+  id: number;
   email: string;
 }
 

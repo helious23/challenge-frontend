@@ -92,7 +92,7 @@ export const Login = () => {
             <div className="text-left mb-3 text-md font-semibold">이메일</div>
             <input
               placeholder="이메일을 입력해주세요"
-              className="w-full px-3 py-2 bg-gray-100 rounded-lg focus:outline-none focus:border-sky-400 border border-gray-100 transition-colors cursor-pointer"
+              className="w-full px-3 py-2 bg-gray-100 rounded-lg focus:outline-none focus:border-sky-400 border border-transparent transition-colors cursor-pointer"
               type="email"
               {...register("email", {
                 required: "이메일 주소가 필요합니다",
@@ -111,7 +111,7 @@ export const Login = () => {
             <div className="text-left mb-3 text-md font-semibold">비밀번호</div>
             <input
               placeholder="비밀번호를 입력해주세요"
-              className="w-full px-3 py-2 bg-gray-100 rounded-lg focus:outline-none focus:border-sky-400 border border-gray-100 transition-colors cursor-pointer"
+              className="w-full px-3 py-2 bg-gray-100 rounded-lg focus:outline-none focus:border-sky-400 border border-transparent transition-colors cursor-pointer"
               type="password"
               {...register("password", {
                 required: "비밀번호가 필요합니다",

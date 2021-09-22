@@ -5,25 +5,16 @@ import {
   REVIEW_FRAGMENT,
 } from "../../fragment";
 import gql from "graphql-tag";
-import { useQuery, useMutation, useApolloClient } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { Logo } from "../../components/logo";
 import spinner from "../../images/spinner.svg";
 import { useState } from "react";
 import { PodcastInfo } from "../../components/podcast-info";
-import { useMe, ME_QUERY } from "../../hooks/useMe";
-import {
-  likeMutation,
-  likeMutationVariables,
-} from "../../__generated__/likeMutation";
 import {
   podcastsDetailQuery,
   podcastsDetailQueryVariables,
 } from "../../__generated__/podcastsDetailQuery";
-import {
-  subscribeMutation,
-  subscribeMutationVariables,
-} from "../../__generated__/subscribeMutation";
 import { Review } from "../../components/review";
 import { EpisodeList } from "../../components/episode-list";
 import { SubButton } from "../../components/sub-button";
@@ -31,17 +22,6 @@ import { LikeButton } from "../../components/like-button";
 
 interface IPodcastParams {
   id: string;
-}
-
-interface ISubscriptions {
-  __typename: string;
-  id: number;
-  title: string;
-}
-
-interface ILikes {
-  __typename: string;
-  id: number;
 }
 
 export const PODCAST_QUERY = gql`
@@ -78,31 +58,9 @@ export const PODCAST_QUERY = gql`
   ${REVIEW_FRAGMENT}
 `;
 
-const LIKE_MUTATION = gql`
-  mutation likeMutation($input: ToggleLikeInput!) {
-    toggleLike(input: $input) {
-      ok
-      error
-    }
-  }
-`;
-
-const SUBSCRIBE_MUTATION = gql`
-  mutation subscribeMutation($input: ToggleSubscribeInput!) {
-    toggleSubscribe(input: $input) {
-      ok
-      error
-    }
-  }
-`;
-
 export const PodcastDetail = () => {
   const [episodeView, setEpisodeView] = useState(true);
   const [reviewView, setReviewView] = useState(false);
-  const [subLoading, setSubLoading] = useState(false);
-  const [likeLoading, setLikeLoading] = useState(false);
-  const { data: userData } = useMe();
-  const client = useApolloClient();
 
   const onEpisodeView = () => {
     setEpisodeView(true);
@@ -114,12 +72,6 @@ export const PodcastDetail = () => {
   };
 
   const { id } = useParams<IPodcastParams>();
-
-  const onSubscription = userData?.me.subscriptions.some(
-    (podcast) => podcast.id === +id
-  );
-
-  const onLike = userData?.me.likes.some((podcast) => podcast.id === +id);
 
   const { data: podcastData, loading } = useQuery<
     podcastsDetailQuery,
@@ -138,203 +90,6 @@ export const PodcastDetail = () => {
     },
   });
 
-  const onLikeCompleted = async (data: likeMutation) => {
-    const {
-      toggleLike: { ok },
-    } = data;
-
-    if (ok) {
-      const meQueryResult = client.readQuery({
-        query: ME_QUERY,
-      });
-
-      if (meQueryResult) {
-        client.writeQuery({
-          query: ME_QUERY,
-          data: {
-            me: {
-              ...meQueryResult.me,
-              likes: onLike
-                ? meQueryResult.me.likes.filter(
-                    (like: ILikes) => like.id !== +id
-                  )
-                : [
-                    ...meQueryResult.me.likes,
-                    {
-                      __typename: "Podcast",
-                      id: +id,
-                    },
-                  ],
-            },
-          },
-        });
-      }
-      const queryResult = client.readQuery({
-        query: PODCAST_QUERY,
-        variables: {
-          PodcastSearchInput: {
-            id: +id,
-          },
-          CountSubscriptionsInput: {
-            id: +id,
-          },
-          CountLikesInput: {
-            id: +id,
-          },
-        },
-      });
-
-      if (queryResult) {
-        client.writeQuery({
-          query: PODCAST_QUERY,
-          variables: {
-            PodcastSearchInput: {
-              id: +id,
-            },
-            CountSubscriptionsInput: {
-              id: +id,
-            },
-            CountLikesInput: {
-              id: +id,
-            },
-          },
-          data: {
-            getPodcast: {
-              ...queryResult.getPodcast,
-            },
-            countSubscriptions: {
-              ...queryResult.countSubscriptions,
-            },
-            countLikes: {
-              ...queryResult.countLikes,
-              users: onLike
-                ? queryResult.countLikes.users - 1
-                : queryResult.countLikes.users + 1,
-            },
-          },
-        });
-      }
-    }
-    setLikeLoading(false);
-  };
-
-  const onSubCompleted = async (data: subscribeMutation) => {
-    const {
-      toggleSubscribe: { ok },
-    } = data;
-
-    if (ok) {
-      const meQueryResult = client.readQuery({
-        query: ME_QUERY,
-      });
-
-      if (meQueryResult) {
-        client.writeQuery({
-          query: ME_QUERY,
-          data: {
-            me: {
-              ...meQueryResult.me,
-              subscriptions: onSubscription
-                ? meQueryResult.me.subscriptions.filter(
-                    (sub: ISubscriptions) => sub.id !== +id
-                  )
-                : [
-                    ...meQueryResult.me.subscriptions,
-                    {
-                      __typename: "Podcast",
-                      id: +id,
-                      title: podcastData?.getPodcast.podcast?.title,
-                    },
-                  ],
-            },
-          },
-        });
-      }
-      const queryResult = client.readQuery({
-        query: PODCAST_QUERY,
-        variables: {
-          PodcastSearchInput: {
-            id: +id,
-          },
-          CountSubscriptionsInput: {
-            id: +id,
-          },
-          CountLikesInput: {
-            id: +id,
-          },
-        },
-      });
-
-      if (queryResult) {
-        client.writeQuery({
-          query: PODCAST_QUERY,
-          variables: {
-            PodcastSearchInput: {
-              id: +id,
-            },
-            CountSubscriptionsInput: {
-              id: +id,
-            },
-            CountLikesInput: {
-              id: +id,
-            },
-          },
-          data: {
-            getPodcast: {
-              ...queryResult.getPodcast,
-            },
-            countSubscriptions: {
-              ...queryResult.countSubscriptions,
-              users: onSubscription
-                ? queryResult.countSubscriptions.users - 1
-                : queryResult.countSubscriptions.users + 1,
-            },
-            countLikes: {
-              ...queryResult.countLikes,
-            },
-          },
-        });
-      }
-    }
-    setSubLoading(false);
-  };
-
-  const [subscribeMutation] = useMutation<
-    subscribeMutation,
-    subscribeMutationVariables
-  >(SUBSCRIBE_MUTATION, {
-    onCompleted: onSubCompleted,
-  });
-
-  const [likeMutation] = useMutation<likeMutation, likeMutationVariables>(
-    LIKE_MUTATION,
-    {
-      onCompleted: onLikeCompleted,
-    }
-  );
-
-  const onLikes = () => {
-    setLikeLoading(true);
-    likeMutation({
-      variables: {
-        input: {
-          podcastId: +id,
-        },
-      },
-    });
-  };
-
-  const onSubscribe = () => {
-    setSubLoading(true);
-    subscribeMutation({
-      variables: {
-        input: {
-          podcastId: +id,
-        },
-      },
-    });
-  };
-
   return (
     <div className="mt-32 lg:mt-24 w-full">
       {loading ? (
@@ -343,7 +98,7 @@ export const PodcastDetail = () => {
         </div>
       ) : (
         <>
-          <PageTitle title={podcastData?.getPodcast.podcast?.title!} />
+          <PageTitle title={podcastData?.getPodcast.podcast?.title} />
           <div className="md:max-w-5xl mx-auto">
             <div className="flex flex-col items-start justify-center lg:flex-row lg:items-start lg:justify-start lg:w-full">
               <div className="flex items-center justify-center w-full lg:w-2/5">
@@ -365,15 +120,28 @@ export const PodcastDetail = () => {
                 <div className="mt-5 flex justify-start items-center">
                   <SubButton
                     id={id}
-                    onSubscribe={onSubscribe}
-                    onSubscription={onSubscription}
-                    subLoading={subLoading}
-                    userData={userData}
+                    title={podcastData?.getPodcast.podcast?.title}
+                    coverImg={podcastData?.getPodcast.podcast?.coverImg}
+                    categoryName={
+                      podcastData?.getPodcast.podcast?.category?.name
+                    }
+                    categorySlug={
+                      podcastData?.getPodcast.podcast?.category?.slug
+                    }
+                    description={podcastData?.getPodcast.podcast?.description}
+                    options={"w-32 lg:w-44"}
                   />
                   <LikeButton
-                    likeLoading={likeLoading}
-                    onLike={onLike}
-                    onLikes={onLikes}
+                    id={id}
+                    title={podcastData?.getPodcast.podcast?.title}
+                    coverImg={podcastData?.getPodcast.podcast?.coverImg}
+                    categoryName={
+                      podcastData?.getPodcast.podcast?.category?.name
+                    }
+                    categorySlug={
+                      podcastData?.getPodcast.podcast?.category?.slug
+                    }
+                    description={podcastData?.getPodcast.podcast?.description}
                   />
                 </div>
                 <div className="mt-5 w-full mb-32">
@@ -401,7 +169,7 @@ export const PodcastDetail = () => {
                       </div>
                     </div>
                     <div className={episodeView ? "mt-5" : "hidden"}>
-                      <EpisodeList podcastData={podcastData} />
+                      <EpisodeList podcast={podcastData?.getPodcast.podcast} />
                     </div>
                     <div className={reviewView ? "mt-5" : "hidden"}>
                       <Review podcastData={podcastData} id={id} />

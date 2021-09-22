@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
 interface IPageTitleProps {
-  title: string;
+  title: string | undefined;
 }
 
 export const PageTitle: React.FC<IPageTitleProps> = ({ title }) => {

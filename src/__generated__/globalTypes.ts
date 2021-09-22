@@ -49,6 +49,11 @@ export interface EditProfileInput {
   email?: string | null;
 }
 
+export interface GetEpisodeInput {
+  podcastId: number;
+  episodeId: number;
+}
+
 export interface LoginInput {
   email: string;
   password: string;
