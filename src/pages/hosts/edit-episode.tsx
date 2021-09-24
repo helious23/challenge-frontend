@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { useMutation, useApolloClient } from "@apollo/client";
+import { useMutation, useApolloClient, useQuery } from "@apollo/client";
 import { Logo } from "../../components/logo";
 import spinner from "../../images/spinner.svg";
 import { PageTitle } from "../../components/page-title";
@@ -7,19 +7,19 @@ import { useForm } from "react-hook-form";
 import { FormError } from "../../components/form-error";
 import { Button } from "../../components/button";
 import { useHistory, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MY_PODCAST_QUERY } from "./my-podcast";
+import { myPodcast, myPodcastVariables } from "../../__generated__/myPodcast";
 import {
-  createEpisode,
-  createEpisodeVariables,
-} from "../../__generated__/createEpisode";
+  updateEpisode,
+  updateEpisodeVariables,
+} from "../../__generated__/updateEpisode";
 
-export const CREATE_EPISODE_MUTATION = gql`
-  mutation createEpisode($createEpisodeInput: CreateEpisodeInput!) {
-    createEpisode(input: $createEpisodeInput) {
+export const UPDATE_EPISODE_MUTATION = gql`
+  mutation updateEpisode($updateEpisodeInput: UpdateEpisodeInput!) {
+    updateEpisode(input: $updateEpisodeInput) {
       ok
       error
-      id
     }
   }
 `;
@@ -31,71 +31,120 @@ interface IFormProps {
 }
 
 interface IParams {
-  id: string;
+  podcastId: string;
+  episodeId: string;
 }
 
-export const AddEpisode = () => {
+interface IEpisode {
+  __typename: "Episode";
+  id: number;
+  title: string;
+  episodeUrl: string | null;
+  description: string | null;
+}
+
+export const EditEpisode = () => {
   const client = useApolloClient();
   const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const [episodeUrl, setEpisodeUrl] = useState("");
-  const { id } = useParams<IParams>();
+  const { podcastId, episodeId } = useParams<IParams>();
+  const [episode, setEpisode] = useState<IEpisode>();
 
-  const { register, formState, handleSubmit, getValues } = useForm<IFormProps>({
-    mode: "all",
-  });
+  const { register, formState, handleSubmit, getValues, setValue } =
+    useForm<IFormProps>({
+      mode: "all",
+    });
+  const { data: myPodcastData } = useQuery<myPodcast, myPodcastVariables>(
+    MY_PODCAST_QUERY,
+    {
+      variables: {
+        input: {
+          id: +podcastId,
+        },
+      },
+    }
+  );
 
-  const onCompleted = (data: createEpisode) => {
+  useEffect(() => {
+    if (myPodcastData) {
+      let result: IEpisode;
+      const findData = myPodcastData.myPodcast.podcast?.episodes.find(
+        (episode) => episode.id === +episodeId
+      );
+      result = {
+        ...findData!,
+      };
+      setEpisode(result);
+    }
+  }, [myPodcastData, episodeId]);
+
+  useEffect(() => {
+    if (episode) {
+      setValue("title", episode.title);
+      setValue(
+        "description",
+        episode.description !== null ? episode.description : ""
+      );
+    }
+  }, [episode, setValue]);
+
+  const onCompleted = (data: updateEpisode) => {
     const {
-      createEpisode: { ok, id: episodeId },
+      updateEpisode: { ok },
     } = data;
     if (ok) {
       const { title, description } = getValues();
       setUploading(false);
       const queryResult = client.readQuery({
         query: MY_PODCAST_QUERY,
-        variables: { input: { id: +id } },
+        variables: { input: { id: +podcastId } },
       });
 
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCAST_QUERY,
-          variables: { input: { id: +id } },
+          variables: { input: { id: +podcastId } },
           data: {
             myPodcast: {
               ...queryResult.myPodcast,
               podcast: {
                 ...queryResult.myPodcast.podcast,
-                episodes: [
-                  ...queryResult.myPodcast.podcast.episodes,
-                  {
-                    createdAt: new Date().toISOString(),
-                    ...(description !== null
-                      ? { description }
-                      : { description: null }),
-                    id: episodeId,
-                    rating: 0,
-                    title,
-                    episodeUrl,
-                    __typename: "Episode",
-                  },
-                ],
+                episodes: queryResult.myPodcast.podcast.episodes.map(
+                  (episode: IEpisode) =>
+                    episode.id === +episodeId
+                      ? {
+                          createdAt: new Date().toISOString(),
+                          ...(description !== null
+                            ? { description }
+                            : { description: null }),
+                          id: +episodeId,
+                          rating: 0,
+                          title,
+                          episodeUrl:
+                            episodeUrl === ""
+                              ? episode?.episodeUrl
+                              : episodeUrl,
+                          __typename: "Episode",
+                        }
+                      : episode
+                ),
               },
             },
           },
         });
       }
-      alert("에피소드가 등록 되었습니다");
-      history.push(`/podcast/${id}`);
+      alert("에피소드가 수정 되었습니다");
+      history.push(`/podcast/${podcastId}`);
       setUploading(false);
     }
   };
 
   const [
-    createEpisodeMutation,
-    { data: createEpisodeMutationResults, loading },
-  ] = useMutation<createEpisode, createEpisodeVariables>(
-    CREATE_EPISODE_MUTATION,
+    updateEpisodeMutation,
+    { data: updateEpisodeMutationResult, loading },
+  ] = useMutation<updateEpisode, updateEpisodeVariables>(
+    UPDATE_EPISODE_MUTATION,
     {
       onCompleted,
     }
@@ -105,28 +154,30 @@ export const AddEpisode = () => {
     try {
       setUploading(true);
       const { title, description, file } = data;
-      const actualAudio = file[0];
-      const formBody = new FormData();
-      formBody.append("file", actualAudio);
-      const { url: episodeUrl } = await (
-        await fetch(
-          "https://nuber-eats-challenge-back.herokuapp.com/uploads/",
-          {
-            method: "POST",
-            body: formBody,
-          }
-        )
-      ).json();
-      setEpisodeUrl(episodeUrl);
-      console.log(episodeUrl);
+      if (file.length !== 0) {
+        const actualAudio = file[0];
+        const formBody = new FormData();
+        formBody.append("file", actualAudio);
+        const { url: episodeUrl } = await (
+          await fetch(
+            "https://nuber-eats-challenge-back.herokuapp.com/uploads/",
+            {
+              method: "POST",
+              body: formBody,
+            }
+          )
+        ).json();
+        setEpisodeUrl(episodeUrl);
+      }
 
-      createEpisodeMutation({
+      updateEpisodeMutation({
         variables: {
-          createEpisodeInput: {
-            title,
-            ...(description !== "" && { description }),
-            episodeUrl,
-            podcastId: +id,
+          updateEpisodeInput: {
+            podcastId: +podcastId,
+            episodeId: +episodeId,
+            ...(title !== "" && { title }),
+            description,
+            ...(episodeUrl !== "" && { episodeUrl }),
           },
         },
       });
@@ -135,7 +186,7 @@ export const AddEpisode = () => {
 
   return (
     <div className="mt-40 lg:mt-36">
-      <PageTitle title={"에피소드 등록"} />
+      <PageTitle title={"에피소드 수정"} />
       {loading ? (
         <div className="mt-64 flex justify-center items-center">
           <Logo logoFile={spinner} option={"w-32"} />
@@ -143,7 +194,7 @@ export const AddEpisode = () => {
       ) : (
         <div className="mt-8 pb-20 max-w-lg md:max-w-4xl mx-auto">
           <div className="flex items-center justify-center">
-            <div className="text-2xl font-medium">에피소드 등록하기</div>
+            <div className="text-2xl font-medium">에피소드 수정하기</div>
           </div>
           <div className="mx-10 mt-10 mb-5 flex justify-between">
             <form
@@ -154,7 +205,6 @@ export const AddEpisode = () => {
               <input
                 className="py-2 px-2 bg-gray-100 rounded-lg outline-none text-gray-700 text-base font-light focus:border-sky-400 border border-transparent transition-colors"
                 {...register("title", {
-                  required: "에피소드 제목은 필수 입력 사항 입니다",
                   minLength: {
                     value: 2,
                     message: "에피소드 제목은 두글자 이상이 필요합니다",
@@ -162,7 +212,6 @@ export const AddEpisode = () => {
                 })}
                 placeholder="에피소드 제목"
                 type="text"
-                required
               />
 
               {formState.errors.title?.message && (
@@ -175,28 +224,24 @@ export const AddEpisode = () => {
                 placeholder="에피소드 설명 (선택사항)"
               />
               <div className="font-medium ml-3 mt-2 text-lg">
-                에피소드 파일 등록
+                에피소드 파일 수정
               </div>
               <div className="flex justify-between items-center py-2 px-2 bg-gray-100 rounded-lg outline-none focus:border-sky-400 border border-transparent transition-colors">
                 <input
                   className="px-2 bg-gray-100 rounded-lg outline-none text-gray-700 text-base focus:border-sky-400 border border-transparent transition-colors w-10/12"
                   type="file"
                   accept="audio/*"
-                  {...register("file", {
-                    required: "에피소드 파일은 필수 등록 사항입니다",
-                  })}
+                  {...register("file")}
                 />
               </div>
               <Button
-                canClick={formState.isValid}
+                canClick={true}
                 loading={uploading}
-                actionText="에피소드 등록하기"
+                actionText="에피소드 수정하기"
               />
-              {createEpisodeMutationResults?.createEpisode.error && (
+              {updateEpisodeMutationResult?.updateEpisode.error && (
                 <FormError
-                  errorMessage={
-                    createEpisodeMutationResults.createEpisode.error
-                  }
+                  errorMessage={updateEpisodeMutationResult.updateEpisode.error}
                 />
               )}
             </form>

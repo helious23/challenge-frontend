@@ -103,6 +103,14 @@ export interface ToggleSubscribeInput {
   podcastId: number;
 }
 
+export interface UpdateEpisodeInput {
+  podcastId: number;
+  episodeId: number;
+  title?: string | null;
+  description?: string | null;
+  episodeUrl?: string | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

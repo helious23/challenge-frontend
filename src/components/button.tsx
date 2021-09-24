@@ -13,6 +13,7 @@ export const Button: React.FC<IButtonProps> = ({
   actionText,
 }) => (
   <button
+    disabled={loading ? true : false}
     className={`mt-3 py-3 text-white font-medium text-lg rounded-3xl focus:outline-none transition-colors ${
       canClick
         ? " bg-sky-400 hover:bg-sky-600"

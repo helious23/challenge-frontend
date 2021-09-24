@@ -12,6 +12,7 @@ const routes = {
   likes: "/likes",
   addPodcast: "/add-podcast",
   addEpisode: "/add-podcast/:id/add-episode",
+  editEpisode: "/podcast/:podcastId/edit-episode/:episodeId",
 };
 
 export default routes;
