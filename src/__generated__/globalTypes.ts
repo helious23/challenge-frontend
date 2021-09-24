@@ -37,7 +37,6 @@ export interface CreatePodcastInput {
   coverImg: string;
   categoryName: string;
   categoryImg?: string | null;
-  promotionImage?: string | null;
 }
 
 export interface CreateReviewInput {
@@ -66,6 +65,10 @@ export interface GetEpisodeInput {
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+export interface MyPodcastInput {
+  id: number;
 }
 
 export interface MyPodcastsInput {

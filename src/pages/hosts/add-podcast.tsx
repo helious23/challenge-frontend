@@ -15,7 +15,7 @@ import { allCategories } from "../../__generated__/allCategories";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import routes from "../../routes";
-import { MY_PODCAST_QUERY } from "./my-podcasts";
+import { MY_PODCASTS_QUERY } from "./my-podcasts";
 
 export const CREATE_PODCAST_MUTATION = gql`
   mutation createPodcast($createPodcastInput: CreatePodcastInput!) {
@@ -45,7 +45,6 @@ interface IFormProps {
   description: string;
   categoryName: string;
   file: FileList;
-  promotionImg: FileList;
 }
 
 export const AddPodcast = () => {
@@ -62,13 +61,13 @@ export const AddPodcast = () => {
       const { title, categoryName, description } = getValues();
       setUploading(false);
       const queryResult = client.readQuery({
-        query: MY_PODCAST_QUERY,
+        query: MY_PODCASTS_QUERY,
         variables: { input: { page: 1 } },
       });
 
       if (queryResult) {
         client.writeQuery({
-          query: MY_PODCAST_QUERY,
+          query: MY_PODCASTS_QUERY,
           variables: { input: { page: 1 } },
           data: {
             myPodcasts: {
@@ -128,7 +127,6 @@ export const AddPodcast = () => {
     try {
       setUploading(true);
       const { title, categoryName, description, file } = data;
-
       const actualImage = file[0];
       const formBody = new FormData();
       formBody.append("file", actualImage);

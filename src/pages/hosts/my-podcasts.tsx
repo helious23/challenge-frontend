@@ -13,7 +13,7 @@ import {
 } from "../../__generated__/myPodcasts";
 import { NoPodcast } from "./no-podcast";
 
-export const MY_PODCAST_QUERY = gql`
+export const MY_PODCASTS_QUERY = gql`
   query myPodcasts($input: MyPodcastsInput!) {
     myPodcasts(input: $input) {
       ok
@@ -32,7 +32,7 @@ export const MyPodcasts = () => {
   const [page, setPage] = useState(1);
 
   const { data, loading } = useQuery<myPodcasts, myPodcastsVariables>(
-    MY_PODCAST_QUERY,
+    MY_PODCASTS_QUERY,
     {
       variables: {
         input: {

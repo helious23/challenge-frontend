@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 interface IPodcastInfoProps {
   categoryName: string | null | undefined;
   podcastTitle: string | null | undefined;
-  creator: string | undefined;
-  subscriber: number | null | undefined;
-  likes: number | null | undefined;
+  creator?: string | undefined;
+  subscriber?: number | null | undefined;
+  likes?: number | null | undefined;
   description: string | null | undefined;
 }
 

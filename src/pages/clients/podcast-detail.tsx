@@ -92,6 +92,7 @@ export const PodcastDetail = () => {
 
   return (
     <div className="mt-32 lg:mt-24 w-full">
+      <PageTitle title={"팟캐스트 정보"} />
       {loading ? (
         <div className="mt-64 flex justify-center items-center">
           <Logo logoFile={spinner} option={"w-32"} />
@@ -169,7 +170,10 @@ export const PodcastDetail = () => {
                       </div>
                     </div>
                     <div className={episodeView ? "mt-5" : "hidden"}>
-                      <EpisodeList podcast={podcastData?.getPodcast.podcast} />
+                      <EpisodeList
+                        episodes={podcastData?.getPodcast.podcast?.episodes}
+                        id={podcastData?.getPodcast.podcast?.id}
+                      />
                     </div>
                     <div className={reviewView ? "mt-5" : "hidden"}>
                       <Review podcastData={podcastData} id={id} />
