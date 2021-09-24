@@ -16,6 +16,7 @@ export interface getEpisode_getEpisode_episode {
   createdAt: any;
   description: string | null;
   rating: number | null;
+  episodeUrl: string | null;
 }
 
 export interface getEpisode_getEpisode {

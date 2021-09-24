@@ -31,6 +31,13 @@ export interface CreateAccountInput {
   role?: UserRole | null;
 }
 
+export interface CreateEpisodeInput {
+  title: string;
+  description?: string | null;
+  episodeUrl?: string | null;
+  podcastId: number;
+}
+
 export interface CreatePodcastInput {
   title: string;
   description?: string | null;

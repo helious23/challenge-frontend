@@ -27,6 +27,7 @@ export interface podcastsDetailQuery_getPodcast_podcast_episodes {
   createdAt: any;
   description: string | null;
   rating: number | null;
+  episodeUrl: string | null;
 }
 
 export interface podcastsDetailQuery_getPodcast_podcast_reviews_reviewer {

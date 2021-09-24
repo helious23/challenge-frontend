@@ -30,6 +30,7 @@ export const EPISODE_FRAGMENT = gql`
     createdAt
     description
     rating
+    episodeUrl
   }
 `;
 

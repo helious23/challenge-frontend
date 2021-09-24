@@ -14,4 +14,5 @@ export interface EpisodeParts {
   createdAt: any;
   description: string | null;
   rating: number | null;
+  episodeUrl: string | null;
 }

@@ -22,6 +22,7 @@ export interface myPodcast_myPodcast_podcast_episodes {
   createdAt: any;
   description: string | null;
   rating: number | null;
+  episodeUrl: string | null;
 }
 
 export interface myPodcast_myPodcast_podcast {
