@@ -9,21 +9,9 @@ export const ME_QUERY = gql`
       email
       subscriptions {
         id
-        title
-        coverImg
-        category {
-          name
-        }
-        description
       }
       likes {
         id
-        title
-        coverImg
-        category {
-          name
-        }
-        description
       }
       role
     }

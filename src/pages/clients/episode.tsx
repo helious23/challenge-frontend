@@ -17,7 +17,7 @@ import {
   getEpisodesVariables,
 } from "../../__generated__/getEpisodes";
 
-const GET_EPISODE = gql`
+export const GET_EPISODE = gql`
   query getEpisode(
     $GetEpisodeInput: GetEpisodeInput!
     $PodcastSearchInput: PodcastSearchInput!
@@ -41,7 +41,7 @@ const GET_EPISODE = gql`
   ${PODCAST_FRAGMENT}
 `;
 
-const GET_EPISODES = gql`
+export const GET_EPISODES = gql`
   query getEpisodes($GetEpisodesInput: PodcastSearchInput!) {
     getEpisodes(input: $GetEpisodesInput) {
       ok

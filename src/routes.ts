@@ -10,6 +10,8 @@ const routes = {
   episode: "/podcast/:id/episode/:episodeId",
   subscriptions: "/subscriptions",
   likes: "/likes",
+  addPodcast: "/add-podcast",
+  addEpisode: "/add-podcast/:id/add-episode",
 };
 
 export default routes;

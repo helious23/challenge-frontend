@@ -1,12 +1,28 @@
 import { PageTitle } from "../../components/page-title";
-import { useMe } from "../../hooks/useMe";
 import { Logo } from "../../components/logo";
 import spinner from "../../images/spinner.svg";
 import { Podcast } from "../../components/podcast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import gql from "graphql-tag";
+import { PODCAST_FRAGMENT } from "../../fragment";
+import { useQuery } from "@apollo/client";
+import { myLikes } from "../../__generated__/myLikes";
+
+export const MY_LIKES_QUERY = gql`
+  query myLikes {
+    myLikes {
+      ok
+      error
+      likes {
+        ...PodcastParts
+      }
+    }
+  }
+  ${PODCAST_FRAGMENT}
+`;
 
 export const Likes = () => {
-  const { data, loading } = useMe();
+  const { data, loading } = useQuery<myLikes>(MY_LIKES_QUERY);
 
   return (
     <div className="mt-32 lg:mt-28 mx-5">
@@ -26,16 +42,17 @@ export const Likes = () => {
               />
             </div>
             <div className="grid md:grid-cols-4 gap-3 mb-16">
-              {data?.me.likes.map((podcast) => (
-                <Podcast
-                  key={podcast.id}
-                  id={podcast.id}
-                  title={podcast.title}
-                  coverImg={podcast.coverImg}
-                  categoryName={podcast.category?.name}
-                  description={podcast.description!}
-                />
-              ))}
+              {data?.myLikes.likes !== null &&
+                data?.myLikes.likes.map((podcast) => (
+                  <Podcast
+                    key={podcast.id}
+                    id={podcast.id}
+                    title={podcast.title}
+                    coverImg={podcast.coverImg}
+                    categoryName={podcast.category?.name}
+                    description={podcast.description!}
+                  />
+                ))}
             </div>
           </div>
         </div>

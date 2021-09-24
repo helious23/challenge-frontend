@@ -31,6 +31,15 @@ export interface CreateAccountInput {
   role?: UserRole | null;
 }
 
+export interface CreatePodcastInput {
+  title: string;
+  description?: string | null;
+  coverImg: string;
+  categoryName: string;
+  categoryImg?: string | null;
+  promotionImage?: string | null;
+}
+
 export interface CreateReviewInput {
   title: string;
   text: string;
@@ -57,6 +66,10 @@ export interface GetEpisodeInput {
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+export interface MyPodcastsInput {
+  page?: number | null;
 }
 
 export interface PodcastSearchInput {

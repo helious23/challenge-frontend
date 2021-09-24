@@ -72,7 +72,7 @@ export const Podcasts = () => {
   });
 
   return (
-    <div className="mt-20 lg:mt-20">
+    <div className="mt-20 lg:mt-20 ">
       <PageTitle title={"국내 최대 팟캐스트 컨텐츠"} />
       {loading ? (
         <div className="mt-64 flex justify-center items-center">

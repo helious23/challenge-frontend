@@ -10,6 +10,7 @@ import {
 import gql from "graphql-tag";
 import { ME_QUERY, useMe } from "../hooks/useMe";
 import { PODCAST_QUERY } from "../pages/clients/podcast-detail";
+import { MY_SUBSCRIPTIONS_QUERY } from "../pages/clients/subscriptions";
 
 interface ISubButtonProps {
   id: string;
@@ -132,6 +133,39 @@ export const SubButton: React.FC<ISubButtonProps> = ({
             },
             countLikes: {
               ...queryResult.countLikes,
+            },
+          },
+        });
+      }
+      const mySubscriptionsQuery = client.readQuery({
+        query: MY_SUBSCRIPTIONS_QUERY,
+      });
+
+      if (mySubscriptionsQuery) {
+        client.writeQuery({
+          query: MY_SUBSCRIPTIONS_QUERY,
+          data: {
+            mySubscriptions: {
+              ...mySubscriptionsQuery.mySubscriptions,
+              podcasts: onSubscription
+                ? mySubscriptionsQuery.mySubscriptions.podcasts.filter(
+                    (sub: ISubscriptions) => sub.id !== +id
+                  )
+                : [
+                    ...mySubscriptionsQuery.mySubscriptions.podcasts,
+                    {
+                      __typename: "Podcast",
+                      id: +id,
+                      title,
+                      coverImg,
+                      category: {
+                        __typename: "Category",
+                        name: categoryName,
+                        slug: categorySlug,
+                      },
+                      description,
+                    },
+                  ],
             },
           },
         });

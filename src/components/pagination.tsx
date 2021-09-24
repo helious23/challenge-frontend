@@ -22,7 +22,7 @@ export const Pagination: React.FC<IPagenationProps> = ({
       {page > 1 ? (
         <div
           onClick={onPrevPageClick}
-          className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pr-0.5 transform hover:-translate-y-1 transition-transform cursor-pointer"
+          className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pr-0.5 cursor-pointer"
         >
           <FontAwesomeIcon
             icon={faChevronLeft}
@@ -30,7 +30,7 @@ export const Pagination: React.FC<IPagenationProps> = ({
           />
         </div>
       ) : (
-        <div className="w-8 h-8 bg-gray-200 rounded-full flex justify-center items-center pr-0.5">
+        <div className="w-8 h-8 bg-gray-200 rounded-full flex justify-center items-center pr-0.5 opacity-30">
           <FontAwesomeIcon
             icon={faChevronLeft}
             className="focus:outline-none text-xl text-gray-600"
@@ -40,7 +40,7 @@ export const Pagination: React.FC<IPagenationProps> = ({
       {page !== totalPages ? (
         <div
           onClick={onNextPageClick}
-          className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pl-0.5 transform hover:-translate-y-1 transition-transform cursor-pointer"
+          className="w-8 h-8 bg-sky-200 rounded-full flex justify-center items-center pl-0.5 cursor-pointer"
         >
           <FontAwesomeIcon
             icon={faChevronRight}
@@ -48,7 +48,7 @@ export const Pagination: React.FC<IPagenationProps> = ({
           />
         </div>
       ) : (
-        <div className="w-8 h-8 bg-gray-200 rounded-full flex justify-center items-center pl-0.5">
+        <div className="w-8 h-8 bg-gray-200 rounded-full flex justify-center items-center pl-0.5 opacity-30">
           <FontAwesomeIcon
             icon={faChevronRight}
             className="focus:outline-none text-xl text-gray-600"

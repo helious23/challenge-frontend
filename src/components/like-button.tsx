@@ -10,6 +10,7 @@ import {
 import { useMutation, useApolloClient } from "@apollo/client";
 import gql from "graphql-tag";
 import { PODCAST_QUERY } from "../pages/clients/podcast-detail";
+import { MY_LIKES_QUERY } from "../pages/clients/likes";
 
 interface ILikeButtonProps {
   id: string;
@@ -127,6 +128,39 @@ export const LikeButton: React.FC<ILikeButtonProps> = ({
               users: onLike
                 ? queryResult.countLikes.users - 1
                 : queryResult.countLikes.users + 1,
+            },
+          },
+        });
+      }
+      const myLikesQuery = client.readQuery({
+        query: MY_LIKES_QUERY,
+      });
+
+      if (myLikesQuery) {
+        client.writeQuery({
+          query: MY_LIKES_QUERY,
+          data: {
+            myLikes: {
+              ...myLikesQuery.myLikes,
+              likes: onLike
+                ? myLikesQuery.myLikes.likes.filter(
+                    (sub: ILikes) => sub.id !== +id
+                  )
+                : [
+                    ...myLikesQuery.myLikes.likes,
+                    {
+                      __typename: "Podcast",
+                      id: +id,
+                      title,
+                      coverImg,
+                      category: {
+                        __typename: "Category",
+                        name: categoryName,
+                        slug: categorySlug,
+                      },
+                      description,
+                    },
+                  ],
             },
           },
         });

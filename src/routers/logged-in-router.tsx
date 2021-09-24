@@ -15,17 +15,29 @@ import { PodcastDetail } from "../pages/clients/podcast-detail";
 import { Episode } from "../pages/clients/episode";
 import { Subscriptions } from "../pages/clients/subscriptions";
 import { Likes } from "../pages/clients/likes";
+import { MyPodcasts } from "../pages/hosts/my-podcasts";
+import { AddPodcast } from "../pages/hosts/add-podcast";
+import { AddEpisode } from "../pages/hosts/add-episode";
+
+const commonRoutes = [
+  { path: routes.editProfile, component: <EditProfile /> },
+  { path: routes.editPassword, component: <EditPassword /> },
+];
 
 const clientRoutes = [
   { path: routes.home, component: <Podcasts /> },
-  { path: routes.editProfile, component: <EditProfile /> },
-  { path: routes.editPassword, component: <EditPassword /> },
   { path: routes.search, component: <Search /> },
   { path: routes.category, component: <Category /> },
   { path: routes.podcast, component: <PodcastDetail /> },
   { path: routes.episode, component: <Episode /> },
   { path: routes.subscriptions, component: <Subscriptions /> },
   { path: routes.likes, component: <Likes /> },
+];
+
+const hostRoutes = [
+  { path: routes.home, component: <MyPodcasts /> },
+  { path: routes.addPodcast, component: <AddPodcast /> },
+  { path: routes.addEpisode, component: <AddEpisode /> },
 ];
 
 export const LoggedInRouter = () => {
@@ -41,8 +53,19 @@ export const LoggedInRouter = () => {
     <Router>
       <Header />
       <Switch>
+        {commonRoutes.map((route) => (
+          <Route key={route.path} path={route.path} exact>
+            {route.component}
+          </Route>
+        ))}
         {data.me.role === UserRole.Listener &&
           clientRoutes.map((route) => (
+            <Route key={route.path} path={route.path} exact>
+              {route.component}
+            </Route>
+          ))}
+        {data.me.role === UserRole.Host &&
+          hostRoutes.map((route) => (
             <Route key={route.path} path={route.path} exact>
               {route.component}
             </Route>
