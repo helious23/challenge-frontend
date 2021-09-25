@@ -79,6 +79,10 @@ export interface LoginInput {
   password: string;
 }
 
+export interface MarkEpisodeAsPlayedInput {
+  id: number;
+}
+
 export interface MyPodcastInput {
   id: number;
 }

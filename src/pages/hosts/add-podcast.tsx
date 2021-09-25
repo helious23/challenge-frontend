@@ -95,7 +95,6 @@ export const AddPodcast = () => {
           },
         });
       }
-      alert("팟캐스트가 등록 되었습니다");
       history.push(routes.home);
     }
     setUploading(false);

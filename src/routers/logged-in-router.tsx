@@ -21,6 +21,7 @@ import { AddEpisode } from "../pages/hosts/add-episode";
 import { MyPodcast } from "../pages/hosts/my-podcast";
 import { EditEpisode } from "../pages/hosts/edit-episode";
 import { EditPodcast } from "../pages/hosts/edit-podcast";
+import { EpisodePlayer } from "../components/episode-player";
 
 const commonRoutes = [
   { path: routes.editProfile, component: <EditProfile /> },
@@ -80,6 +81,7 @@ export const LoggedInRouter = () => {
           <NotFound />
         </Route>
       </Switch>
+      <EpisodePlayer />
     </Router>
   );
 };

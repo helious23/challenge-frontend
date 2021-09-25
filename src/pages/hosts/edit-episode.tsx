@@ -136,13 +136,33 @@ export const EditEpisode = () => {
       setUploading(false);
       const queryResult = client.readQuery({
         query: MY_PODCAST_QUERY,
-        variables: { input: { id: +podcastId } },
+        variables: {
+          input: {
+            id: +podcastId,
+          },
+          countLikesInput: {
+            id: +podcastId,
+          },
+          countSubscriptionsInput: {
+            id: +podcastId,
+          },
+        },
       });
 
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCAST_QUERY,
-          variables: { input: { id: +podcastId } },
+          variables: {
+            input: {
+              id: +podcastId,
+            },
+            countLikesInput: {
+              id: +podcastId,
+            },
+            countSubscriptionsInput: {
+              id: +podcastId,
+            },
+          },
           data: {
             myPodcast: {
               ...queryResult.myPodcast,
@@ -169,10 +189,15 @@ export const EditEpisode = () => {
                 ),
               },
             },
+            countLikes: {
+              ...queryResult.countLikes,
+            },
+            countSubscriptions: {
+              ...queryResult.countSubscriptions,
+            },
           },
         });
       }
-      alert("에피소드가 수정 되었습니다");
       history.push(`/podcast/${podcastId}`);
       setUploading(false);
     }
@@ -229,13 +254,33 @@ export const EditEpisode = () => {
     if (ok) {
       const queryResult = client.readQuery({
         query: MY_PODCAST_QUERY,
-        variables: { input: { id: +podcastId } },
+        variables: {
+          input: {
+            id: +podcastId,
+          },
+          countLikesInput: {
+            id: +podcastId,
+          },
+          countSubscriptionsInput: {
+            id: +podcastId,
+          },
+        },
       });
 
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCAST_QUERY,
-          variables: { input: { id: +podcastId } },
+          variables: {
+            input: {
+              id: +podcastId,
+            },
+            countLikesInput: {
+              id: +podcastId,
+            },
+            countSubscriptionsInput: {
+              id: +podcastId,
+            },
+          },
           data: {
             myPodcast: {
               ...queryResult.myPodcast,
@@ -247,10 +292,16 @@ export const EditEpisode = () => {
                 ),
               },
             },
+            countLikes: {
+              ...queryResult.countLikes,
+            },
+            countSubscriptions: {
+              ...queryResult.countSubscriptions,
+            },
           },
         });
       }
-      history.goBack();
+      history.push(`/podcast/${podcastId}`);
     }
   };
 

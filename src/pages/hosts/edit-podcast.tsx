@@ -95,13 +95,33 @@ export const EditPodcast = () => {
       setUploading(false);
       const queryResult = client.readQuery({
         query: MY_PODCAST_QUERY,
-        variables: { input: { id: +id } },
+        variables: {
+          input: {
+            id: +id,
+          },
+          countLikesInput: {
+            id: +id,
+          },
+          countSubscriptionsInput: {
+            id: +id,
+          },
+        },
       });
 
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCAST_QUERY,
-          variables: { input: { id: +id } },
+          variables: {
+            input: {
+              id: +id,
+            },
+            countLikesInput: {
+              id: +id,
+            },
+            countSubscriptionsInput: {
+              id: +id,
+            },
+          },
           data: {
             myPodcast: {
               ...queryResult.myPodcast,
@@ -117,10 +137,15 @@ export const EditPodcast = () => {
                 coverImg: coverImg === "" ? podcast?.coverImg : coverImg,
               },
             },
+            countLikes: {
+              ...queryResult.countLikes,
+            },
+            countSubscriptions: {
+              ...queryResult.countSubscriptions,
+            },
           },
         });
       }
-      alert("팟캐스트가 수정 되었습니다");
       history.push(`/podcast/${id}`);
       setUploading(false);
     }

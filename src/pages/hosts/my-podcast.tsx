@@ -16,6 +16,7 @@ import { MY_PODCASTS_QUERY } from "./my-podcasts";
 import { myPodcasts_myPodcasts_podcasts } from "../../__generated__/myPodcasts";
 import { DeletePodcastBtn } from "../../components/delete-podcast-btn";
 import { myPodcast, myPodcastVariables } from "../../__generated__/myPodcast";
+import routes from "../../routes";
 
 export const MY_PODCAST_QUERY = gql`
   query myPodcast(
@@ -69,11 +70,10 @@ export const MyPodcast = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const {
-    data: podcastData,
-    loading,
-    error,
-  } = useQuery<myPodcast, myPodcastVariables>(MY_PODCAST_QUERY, {
+  const { data: podcastData, loading } = useQuery<
+    myPodcast,
+    myPodcastVariables
+  >(MY_PODCAST_QUERY, {
     variables: {
       input: {
         id: +id,
@@ -86,7 +86,6 @@ export const MyPodcast = () => {
       },
     },
   });
-  console.log(error);
 
   const onCompleted = (data: deletePodcast) => {
     const {
@@ -97,7 +96,7 @@ export const MyPodcast = () => {
         query: MY_PODCASTS_QUERY,
         variables: { input: { page: 1 } },
       });
-      console.log(queryResult);
+
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCASTS_QUERY,
@@ -116,7 +115,7 @@ export const MyPodcast = () => {
           },
         });
       }
-      history.goBack();
+      history.push(routes.home);
     }
   };
 
@@ -129,7 +128,7 @@ export const MyPodcast = () => {
 
   const onDelete = () => {
     setpodcastDelete(true);
-    console.log(podcastDelete);
+
     setOpen(false);
     if (podcastDelete) {
       deletePodcastMutation({
@@ -141,7 +140,6 @@ export const MyPodcast = () => {
       });
     }
   };
-  console.log(podcastData);
 
   return (
     <div className="mt-32 lg:mt-24">

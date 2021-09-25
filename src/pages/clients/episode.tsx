@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 import { EPISODE_FRAGMENT, PODCAST_FRAGMENT } from "../../fragment";
-import { useQuery } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
 import { useParams, Link } from "react-router-dom";
 import { Logo } from "../../components/logo";
 import spinner from "../../images/spinner.svg";
@@ -8,14 +8,14 @@ import { PageTitle } from "../../components/page-title";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LikeButton } from "../../components/like-button";
 import { SubButton } from "../../components/sub-button";
+import { EpisodeDetailList } from "../../components/episode-detail-list";
+import { playVar, episodeUrlVar, episodeIdVar } from "../../apollo";
+import { LISTENED_EPISODE_QUERY } from "../../components/episode-list";
+import { listenedEpisode } from "../../__generated__/listenedEpisode";
 import {
   getEpisode,
   getEpisodeVariables,
 } from "../../__generated__/getEpisode";
-import {
-  getEpisodes,
-  getEpisodesVariables,
-} from "../../__generated__/getEpisodes";
 
 export const GET_EPISODE = gql`
   query getEpisode(
@@ -41,19 +41,6 @@ export const GET_EPISODE = gql`
   ${PODCAST_FRAGMENT}
 `;
 
-export const GET_EPISODES = gql`
-  query getEpisodes($GetEpisodesInput: PodcastSearchInput!) {
-    getEpisodes(input: $GetEpisodesInput) {
-      ok
-      error
-      episodes {
-        ...EpisodeParts
-      }
-    }
-  }
-  ${EPISODE_FRAGMENT}
-`;
-
 interface IEpisodeParams {
   id: string;
   episodeId: string;
@@ -61,6 +48,8 @@ interface IEpisodeParams {
 
 export const Episode = () => {
   const { id: podcastId, episodeId } = useParams<IEpisodeParams>();
+  const play = useReactiveVar(playVar);
+  const playingEpisodeId = useReactiveVar(episodeIdVar);
 
   const { data: episodeData, loading: episodeLoading } = useQuery<
     getEpisode,
@@ -77,16 +66,23 @@ export const Episode = () => {
     },
   });
 
-  const { data: episodesData, loading: episodesLoading } = useQuery<
-    getEpisodes,
-    getEpisodesVariables
-  >(GET_EPISODES, {
-    variables: {
-      GetEpisodesInput: {
-        id: +podcastId,
-      },
-    },
-  });
+  const onPlay = () => {
+    playVar(true);
+    if (episodeData?.getEpisode.episode?.id) {
+      episodeIdVar(episodeData?.getEpisode.episode?.id);
+    }
+    if (episodeData?.getEpisode.episode?.episodeUrl) {
+      episodeUrlVar(episodeData?.getEpisode.episode?.episodeUrl);
+    }
+  };
+
+  const onStop = () => {
+    playVar(false);
+  };
+
+  const { data: listenedEpisodeData } = useQuery<listenedEpisode>(
+    LISTENED_EPISODE_QUERY
+  );
 
   return (
     <div className="mt-32 lg:mt-24 w-full lg:h-screen">
@@ -113,7 +109,25 @@ export const Episode = () => {
                   />
                 </div>
               </div>
-              <div className="mt-5 text-2xl font-light">
+              <div
+                className={`flex items-center justify-center mt-3 ${
+                  listenedEpisodeData?.listenedEpisode.listenedEpisode?.some(
+                    (listenedEpi) =>
+                      listenedEpi.id === episodeData?.getEpisode.episode?.id
+                  )
+                    ? ""
+                    : "hidden"
+                }`}
+              >
+                <FontAwesomeIcon
+                  icon={["far", "check-circle"]}
+                  className={`text-base mr-2 text-sky-600 opacity-70`}
+                />
+                <div className="text-base text-sky-600 opacity-70">
+                  청취한 에피소드 입니다
+                </div>
+              </div>
+              <div className="mt-3 text-2xl font-light">
                 {episodeData?.getEpisode.episode?.title}
               </div>
               <Link to={`/podcast/${episodeData?.getPodcast.podcast?.id}`}>
@@ -132,16 +146,33 @@ export const Episode = () => {
                   episodeData?.getEpisode.episode?.title}
               </div>
               <div className="flex item-center mt-5">
-                <div className="w-10/12 lg:w-5/12 py-2 bg-sky-500 text-white font-medium text-base rounded-3xl flex">
-                  <div className="flex items-center">
-                    <FontAwesomeIcon
-                      icon={["fas", "play"]}
-                      className="ml-5 text-xl animate-pulse absolute"
-                    />
-                  </div>
-                  <div className="flex w-full items-center justify-center">
-                    <div>에피소드 듣기</div>
-                  </div>
+                <div className="w-10/12 lg:w-5/12 py-2 bg-sky-500 text-white font-medium text-base rounded-3xl flex cursor-pointer hover:opacity-70">
+                  {play &&
+                  episodeData?.getEpisode.episode?.id === playingEpisodeId ? (
+                    <div className="flex w-full" onClick={onStop}>
+                      <div className="flex items-center">
+                        <FontAwesomeIcon
+                          icon={["far", "pause-circle"]}
+                          className="ml-5 text-3xl animate-pulse absolute"
+                        />
+                      </div>
+                      <div className="flex w-full items-center justify-center">
+                        <div>에피소드 정지</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex w-full" onClick={onPlay}>
+                      <div className="flex items-center">
+                        <FontAwesomeIcon
+                          icon={["fas", "play"]}
+                          className="ml-5 text-xl animate-pulse absolute"
+                        />
+                      </div>
+                      <div className="flex w-full items-center justify-center">
+                        <div>에피소드 듣기</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="w-2/12 flex justify-center">
                   <LikeButton
@@ -174,7 +205,7 @@ export const Episode = () => {
                         {episodeData?.getPodcast.podcast?.title}
                       </div>
                       <div className="text-sm font-medium text-sky-600 ">
-                        채널로 가기 &gt;{" "}
+                        채널로 가기 &gt;
                       </div>
                     </div>
                   </div>
@@ -197,94 +228,7 @@ export const Episode = () => {
               </div>
             </div>
             <div className="mt-5 lg:mt-0 h-full lg:w-4/12 lg:mx-5">
-              <div className="h-full">
-                <div className="text-lg font-medium">
-                  이 채널의 다른 에피소드
-                </div>
-                {episodesLoading ? (
-                  <div className="mt-16 flex justify-center items-center">
-                    <Logo logoFile={spinner} option={"w-32"} />
-                  </div>
-                ) : episodesData?.getEpisodes.episodes !== null &&
-                  episodesData?.getEpisodes.episodes.length !== undefined &&
-                  episodesData.getEpisodes.episodes.length >= 5 ? (
-                  episodesData?.getEpisodes.episodes
-                    .slice(-5)
-                    .map((episode) => (
-                      <Link
-                        key={episode.id}
-                        to={`/podcast/${podcastId}/episode/${episode.id}`}
-                      >
-                        <div className="flex justify-between items-center group ">
-                          <div className="mt-3 ">
-                            <div className="text-sm text-gray-700 opacity-60 font-light">
-                              {episode.createdAt
-                                .split("T")[0]
-                                .replace(/-()/g, ".")}
-                            </div>
-                            <div
-                              className={`mt-1 mx-2 text-gray-700 font-normal  ${
-                                episode.id === +episodeId ? "text-sky-500" : ""
-                              }`}
-                            >
-                              {episode.title}
-                            </div>
-                          </div>
-                          <FontAwesomeIcon
-                            icon={["fas", "headphones-alt"]}
-                            className="text-3xl text-sky-400 opacity-70 ml-3 mt-5 group-hover:text-sky-600 transform group-hover:-translate-y-2 transition-transform "
-                          />
-                        </div>
-                        <div className="border-t border-gray-200 w-full mt-5"></div>
-                      </Link>
-                    ))
-                    .reverse()
-                ) : (
-                  episodesData?.getEpisodes.episodes !== null &&
-                  episodesData?.getEpisodes.episodes
-                    .map((episode) => (
-                      <Link
-                        key={episode.id}
-                        to={`/podcast/${podcastId}/episode/${episode.id}`}
-                      >
-                        <div className="flex justify-between items-center group ">
-                          <div className="mt-3 ">
-                            <div className="text-sm text-gray-700 opacity-60 font-light">
-                              {episode.createdAt
-                                .split("T")[0]
-                                .replace(/-()/g, ".")}
-                            </div>
-                            <div
-                              className={`mt-1 mx-2 text-gray-700 font-normal  ${
-                                episode.id === +episodeId ? "text-sky-500" : ""
-                              }`}
-                            >
-                              {episode.title}
-                            </div>
-                          </div>
-                          <FontAwesomeIcon
-                            icon={["fas", "headphones-alt"]}
-                            className="text-3xl text-sky-400 opacity-70 ml-3 mt-5 group-hover:text-sky-600 transform group-hover:-translate-y-2 transition-transform "
-                          />
-                        </div>
-                        <div className="border-t border-gray-200 w-full mt-5"></div>
-                      </Link>
-                    ))
-                    .reverse()
-                )}
-                <div className="flex justify-center items-center my-10 lg:mb-32">
-                  <div className="text-sky-500 font-light hover:text-sky-700">
-                    <Link
-                      to={`/podcast/${episodeData?.getPodcast.podcast?.id}`}
-                    >
-                      <div className="flex items-center">
-                        <div className="mr-2">전체 에피소드 보기</div>
-                        <FontAwesomeIcon icon={["fas", "chevron-right"]} />
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <EpisodeDetailList podcastId={podcastId} episodeId={episodeId} />
             </div>
           </div>
         </div>

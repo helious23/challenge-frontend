@@ -11,6 +11,10 @@ const token = localStorage.getItem(LOCALSTORAGE_TOKEN);
 export const isLoggedInVar = makeVar(Boolean(token));
 export const authTokenVar = makeVar(token);
 
+export const episodeUrlVar = makeVar("");
+export const playVar = makeVar(false);
+export const episodeIdVar = makeVar(0);
+
 export const logUserIn = (token: string) => {
   localStorage.setItem(LOCALSTORAGE_TOKEN, token);
   authTokenVar(token);

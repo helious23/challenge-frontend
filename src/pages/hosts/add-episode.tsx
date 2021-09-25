@@ -54,13 +54,33 @@ export const AddEpisode = () => {
       setUploading(false);
       const queryResult = client.readQuery({
         query: MY_PODCAST_QUERY,
-        variables: { input: { id: +id } },
+        variables: {
+          input: {
+            id: +id,
+          },
+          countLikesInput: {
+            id: +id,
+          },
+          countSubscriptionsInput: {
+            id: +id,
+          },
+        },
       });
 
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCAST_QUERY,
-          variables: { input: { id: +id } },
+          variables: {
+            input: {
+              id: +id,
+            },
+            countLikesInput: {
+              id: +id,
+            },
+            countSubscriptionsInput: {
+              id: +id,
+            },
+          },
           data: {
             myPodcast: {
               ...queryResult.myPodcast,
@@ -82,10 +102,15 @@ export const AddEpisode = () => {
                 ],
               },
             },
+            countLikes: {
+              ...queryResult.countLikes,
+            },
+            countSubscriptions: {
+              ...queryResult.countSubscriptions,
+            },
           },
         });
       }
-      alert("에피소드가 등록 되었습니다");
       history.push(`/podcast/${id}`);
       setUploading(false);
     }
