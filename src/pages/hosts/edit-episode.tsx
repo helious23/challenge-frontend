@@ -231,11 +231,11 @@ export const EditEpisode = () => {
                   className="px-2 bg-gray-100 rounded-lg outline-none text-gray-700 text-base focus:border-sky-400 border border-transparent transition-colors w-10/12"
                   type="file"
                   accept="audio/*"
-                  {...register("file")}
+                  {...register("file", { required: false })}
                 />
               </div>
               <Button
-                canClick={true}
+                canClick={formState.isDirty}
                 loading={uploading}
                 actionText="에피소드 수정하기"
               />

@@ -11,6 +11,7 @@ const routes = {
   subscriptions: "/subscriptions",
   likes: "/likes",
   addPodcast: "/add-podcast",
+  editPodcast: "/edit-podcast/:id",
   addEpisode: "/add-podcast/:id/add-episode",
   editEpisode: "/podcast/:podcastId/edit-episode/:episodeId",
 };

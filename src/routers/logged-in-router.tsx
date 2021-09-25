@@ -20,6 +20,7 @@ import { AddPodcast } from "../pages/hosts/add-podcast";
 import { AddEpisode } from "../pages/hosts/add-episode";
 import { MyPodcast } from "../pages/hosts/my-podcast";
 import { EditEpisode } from "../pages/hosts/edit-episode";
+import { EditPodcast } from "../pages/hosts/edit-podcast";
 
 const commonRoutes = [
   { path: routes.editProfile, component: <EditProfile /> },
@@ -40,6 +41,7 @@ const hostRoutes = [
   { path: routes.home, component: <MyPodcasts /> },
   { path: routes.podcast, component: <MyPodcast /> },
   { path: routes.addPodcast, component: <AddPodcast /> },
+  { path: routes.editPodcast, component: <EditPodcast /> },
   { path: routes.addEpisode, component: <AddEpisode /> },
   { path: routes.editEpisode, component: <EditEpisode /> },
 ];

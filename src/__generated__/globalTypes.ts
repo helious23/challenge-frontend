@@ -111,6 +111,14 @@ export interface UpdateEpisodeInput {
   episodeUrl?: string | null;
 }
 
+export interface UpdatePodcastInput {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  coverImg?: string | null;
+  categoryName?: string | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

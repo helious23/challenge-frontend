@@ -2,11 +2,11 @@ import { useParams, Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import { PageTitle } from "../../components/page-title";
 import { EPISODE_FRAGMENT, PODCAST_FRAGMENT } from "../../fragment";
-import { myPodcast, myPodcastVariables } from "../../__generated__/myPodcast";
 import { Logo } from "../../components/logo";
 import spinner from "../../images/spinner.svg";
 import { PodcastInfo } from "../../components/podcast-info";
 import { EpisodeList } from "../../components/episode-list";
+import { myPodcast, myPodcastVariables } from "../../__generated__/myPodcast";
 
 export const MY_PODCAST_QUERY = gql`
   query myPodcast($input: MyPodcastInput!) {
@@ -68,15 +68,37 @@ export const MyPodcast = () => {
                   podcastTitle={podcastData?.myPodcast.podcast?.title}
                   description={podcastData?.myPodcast.podcast?.description}
                 />
-                <div className="mt-10 flex justify-center items-center">
-                  <Link to={`/add-podcast/${id}/add-episode`}>
-                    <div className=" mx-3 lg:mx-10 px-4 py-2 bg-sky-500 font-white rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
-                      에피소드 등록
+                <div className="mt-10 flex justify-center items-center mx-auto">
+                  <Link to={`/edit-podcast/${id}`}>
+                    <div className="flex flex-col  lg:mx-6 text-sm mx-1 lg:text-base px-3 lg:px-4 py-2 bg-sky-500 font-white rounded-xl lg:rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
+                      <div className="grid grid-row-2 justify-items-center lg:flex">
+                        <div>팟캐스트</div>
+                        <div className="lg:ml-1">수정</div>
+                      </div>
                     </div>
                   </Link>
-                  <div className=" mx-3 lg:mx-10 px-4 py-2 bg-sky-500 font-white rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
-                    프로모션 구매
+                  <Link to={`/add-podcast/${id}/add-episode`}>
+                    <div className="  lg:mx-6 text-sm mx-1 lg:text-base px-3 lg:px-4 py-2 bg-sky-500 font-white rounded-xl lg:rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
+                      <div className="grid grid-row-2 justify-items-center lg:flex">
+                        <div>에피소드</div>
+                        <div className="lg:ml-1">등록</div>
+                      </div>
+                    </div>
+                  </Link>
+                  <div className="  lg:mx-6 text-sm mx-1 lg:text-base px-3 lg:px-4 py-2 bg-sky-500 font-white rounded-xl lg:rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
+                    <div className="grid grid-row-2 justify-items-center lg:flex">
+                      <div>프로모션</div>
+                      <div className="lg:ml-1">구매</div>
+                    </div>
                   </div>
+                  <Link to={`/add-podcast/${id}/add-episode`}>
+                    <div className="  lg:mx-6 text-sm mx-1 lg:text-base px-3 lg:px-4 py-2 bg-sky-500 font-white rounded-xl lg:rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
+                      <div className="grid grid-row-2 justify-items-center lg:flex">
+                        <div>팟캐스트</div>
+                        <div className="lg:ml-1">삭제</div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
                 <div className="mt-10 w-full mb-32">
                   <div>
