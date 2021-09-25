@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useMe } from "../hooks/useMe";
+import { UserRole } from "../__generated__/globalTypes";
 
 interface IPodcastInfoProps {
   categoryName: string | null | undefined;
@@ -17,13 +19,20 @@ export const PodcastInfo: React.FC<IPodcastInfoProps> = ({
   likes,
   description,
 }) => {
+  const { data: userData } = useMe();
   return (
     <div>
-      <Link to={`/category/${categoryName}`}>
+      {userData?.me.role === UserRole.Listener ? (
+        <Link to={`/category/${categoryName}`}>
+          <div className="text-sky-500 text-md font-semibold">
+            # {categoryName}
+          </div>
+        </Link>
+      ) : (
         <div className="text-sky-500 text-md font-semibold">
           # {categoryName}
         </div>
-      </Link>
+      )}
       <div className="text-xl lg:text-2xl font-bold">{podcastTitle}</div>
       <div className="text-gray-600 opacity-50 text-sm mt-0.5">
         {creator && creator.split("@")[0]}

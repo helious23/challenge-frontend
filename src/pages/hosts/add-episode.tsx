@@ -118,7 +118,6 @@ export const AddEpisode = () => {
         )
       ).json();
       setEpisodeUrl(episodeUrl);
-      console.log(episodeUrl);
 
       createEpisodeMutation({
         variables: {

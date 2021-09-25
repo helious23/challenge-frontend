@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MyPodcastInput } from "./globalTypes";
+import { MyPodcastInput, CountSubscriptionsInput, CountLikesInput } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: myPodcast
@@ -42,10 +42,24 @@ export interface myPodcast_myPodcast {
   podcast: myPodcast_myPodcast_podcast | null;
 }
 
+export interface myPodcast_countSubscriptions {
+  __typename: "CountSubscriptionsOutput";
+  users: number | null;
+}
+
+export interface myPodcast_countLikes {
+  __typename: "CountLikesOutput";
+  users: number | null;
+}
+
 export interface myPodcast {
   myPodcast: myPodcast_myPodcast;
+  countSubscriptions: myPodcast_countSubscriptions;
+  countLikes: myPodcast_countLikes;
 }
 
 export interface myPodcastVariables {
   input: MyPodcastInput;
+  countSubscriptionsInput: CountSubscriptionsInput;
+  countLikesInput: CountLikesInput;
 }

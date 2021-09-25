@@ -9,18 +9,18 @@ import { Button } from "../../components/button";
 import { useHistory, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MY_PODCAST_QUERY } from "./my-podcast";
-
 import {
   updatePodcast,
   updatePodcastVariables,
 } from "../../__generated__/updatePodcast";
 import { ALL_CATEGORIES_QUERY } from "./add-podcast";
 import { allCategories } from "../../__generated__/allCategories";
+import { myPodcast_myPodcast_podcast } from "../../__generated__/myPodcast";
+import { MY_PODCAST_INFO } from "./edit-episode";
 import {
-  myPodcast_myPodcast_podcast,
-  myPodcast,
-  myPodcastVariables,
-} from "../../__generated__/myPodcast";
+  myPodcastInfo,
+  myPodcastInfoVariables,
+} from "../../__generated__/myPodcastInfo";
 
 export const UPDATE_PODCAST_MUTATION = gql`
   mutation updatePodcast($updatePodcastInput: UpdatePodcastInput!) {
@@ -54,19 +54,18 @@ export const EditPodcast = () => {
     useForm<IFormProps>({
       mode: "all",
     });
-  const { data: myPodcastData } = useQuery<myPodcast, myPodcastVariables>(
-    MY_PODCAST_QUERY,
-    {
-      variables: {
-        input: {
-          id: +id,
-        },
+  const { data: myPodcastData } = useQuery<
+    myPodcastInfo,
+    myPodcastInfoVariables
+  >(MY_PODCAST_INFO, {
+    variables: {
+      input: {
+        id: +id,
       },
-    }
-  );
+    },
+  });
 
-  const { data: categoryData, loading: categoryLoading } =
-    useQuery<allCategories>(ALL_CATEGORIES_QUERY);
+  const { data: categoryData } = useQuery<allCategories>(ALL_CATEGORIES_QUERY);
 
   useEffect(() => {
     if (myPodcastData) {
@@ -98,7 +97,7 @@ export const EditPodcast = () => {
         query: MY_PODCAST_QUERY,
         variables: { input: { id: +id } },
       });
-      console.log(queryResult);
+
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCAST_QUERY,

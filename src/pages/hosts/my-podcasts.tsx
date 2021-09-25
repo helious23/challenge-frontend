@@ -47,7 +47,7 @@ export const MyPodcasts = () => {
   return (
     <div className="mt-32 lg:mt-24">
       <PageTitle title={"나의 팟캐스트"} />
-      {data?.myPodcasts.totalResults === 0 ? (
+      {data?.myPodcasts.podcasts && data?.myPodcasts.podcasts.length === 0 ? (
         <NoPodcast />
       ) : loading ? (
         <div className="mt-64 flex justify-center items-center">

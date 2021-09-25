@@ -64,6 +64,11 @@ export interface EditProfileInput {
   email?: string | null;
 }
 
+export interface EpisodesSearchInput {
+  podcastId: number;
+  episodeId: number;
+}
+
 export interface GetEpisodeInput {
   podcastId: number;
   episodeId: number;

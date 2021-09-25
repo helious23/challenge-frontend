@@ -9,15 +9,51 @@ import { Button } from "../../components/button";
 import { useHistory, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MY_PODCAST_QUERY } from "./my-podcast";
-import { myPodcast, myPodcastVariables } from "../../__generated__/myPodcast";
+import { DeleteEpisodeBtn } from "../../components/delete-episode-btn";
+import {
+  deleteEpisode,
+  deleteEpisodeVariables,
+} from "../../__generated__/deleteEpisode";
 import {
   updateEpisode,
   updateEpisodeVariables,
 } from "../../__generated__/updateEpisode";
+import { EPISODE_FRAGMENT, PODCAST_FRAGMENT } from "../../fragment";
+import { myPodcast_myPodcast_podcast_episodes } from "../../__generated__/myPodcast";
+import {
+  myPodcastInfo,
+  myPodcastInfoVariables,
+} from "../../__generated__/myPodcastInfo";
+
+export const MY_PODCAST_INFO = gql`
+  query myPodcastInfo($input: MyPodcastInput!) {
+    myPodcast(input: $input) {
+      ok
+      error
+      podcast {
+        ...PodcastParts
+        episodes {
+          ...EpisodeParts
+        }
+      }
+    }
+  }
+  ${PODCAST_FRAGMENT}
+  ${EPISODE_FRAGMENT}
+`;
 
 export const UPDATE_EPISODE_MUTATION = gql`
   mutation updateEpisode($updateEpisodeInput: UpdateEpisodeInput!) {
     updateEpisode(input: $updateEpisodeInput) {
+      ok
+      error
+    }
+  }
+`;
+
+const DELETE_EPISODE_MUTATION = gql`
+  mutation deleteEpisode($deleteEpisodeInput: EpisodesSearchInput!) {
+    deleteEpisode(input: $deleteEpisodeInput) {
       ok
       error
     }
@@ -35,40 +71,42 @@ interface IParams {
   episodeId: string;
 }
 
-interface IEpisode {
-  __typename: "Episode";
-  id: number;
-  title: string;
-  episodeUrl: string | null;
-  description: string | null;
-}
-
 export const EditEpisode = () => {
   const client = useApolloClient();
   const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const [episodeUrl, setEpisodeUrl] = useState("");
   const { podcastId, episodeId } = useParams<IParams>();
-  const [episode, setEpisode] = useState<IEpisode>();
+  const [episode, setEpisode] =
+    useState<myPodcast_myPodcast_podcast_episodes>();
+
+  const [open, setOpen] = useState(false);
+  const [episodeDelete, setEpisodeDelete] = useState(true);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const { register, formState, handleSubmit, getValues, setValue } =
     useForm<IFormProps>({
       mode: "all",
     });
-  const { data: myPodcastData } = useQuery<myPodcast, myPodcastVariables>(
-    MY_PODCAST_QUERY,
-    {
-      variables: {
-        input: {
-          id: +podcastId,
-        },
+  const { data: myPodcastData } = useQuery<
+    myPodcastInfo,
+    myPodcastInfoVariables
+  >(MY_PODCAST_INFO, {
+    variables: {
+      input: {
+        id: +podcastId,
       },
-    }
-  );
+    },
+  });
 
   useEffect(() => {
     if (myPodcastData) {
-      let result: IEpisode;
+      let result: myPodcast_myPodcast_podcast_episodes;
       const findData = myPodcastData.myPodcast.podcast?.episodes.find(
         (episode) => episode.id === +episodeId
       );
@@ -89,7 +127,7 @@ export const EditEpisode = () => {
     }
   }, [episode, setValue]);
 
-  const onCompleted = (data: updateEpisode) => {
+  const onUpdateEpisodeCompleted = (data: updateEpisode) => {
     const {
       updateEpisode: { ok },
     } = data;
@@ -111,7 +149,7 @@ export const EditEpisode = () => {
               podcast: {
                 ...queryResult.myPodcast.podcast,
                 episodes: queryResult.myPodcast.podcast.episodes.map(
-                  (episode: IEpisode) =>
+                  (episode: myPodcast_myPodcast_podcast_episodes) =>
                     episode.id === +episodeId
                       ? {
                           createdAt: new Date().toISOString(),
@@ -146,7 +184,7 @@ export const EditEpisode = () => {
   ] = useMutation<updateEpisode, updateEpisodeVariables>(
     UPDATE_EPISODE_MUTATION,
     {
-      onCompleted,
+      onCompleted: onUpdateEpisodeCompleted,
     }
   );
 
@@ -182,6 +220,60 @@ export const EditEpisode = () => {
         },
       });
     } catch (error) {}
+  };
+
+  const onDeleteEpisodeCompleted = (data: deleteEpisode) => {
+    const {
+      deleteEpisode: { ok },
+    } = data;
+    if (ok) {
+      const queryResult = client.readQuery({
+        query: MY_PODCAST_QUERY,
+        variables: { input: { id: +podcastId } },
+      });
+
+      if (queryResult) {
+        client.writeQuery({
+          query: MY_PODCAST_QUERY,
+          variables: { input: { id: +podcastId } },
+          data: {
+            myPodcast: {
+              ...queryResult.myPodcast,
+              podcast: {
+                ...queryResult.myPodcast.podcast,
+                episodes: queryResult.myPodcast.podcast.episodes.filter(
+                  (episode: myPodcast_myPodcast_podcast_episodes) =>
+                    episode.id !== +episodeId
+                ),
+              },
+            },
+          },
+        });
+      }
+      history.goBack();
+    }
+  };
+
+  const [deleteEpisodeMutation] = useMutation<
+    deleteEpisode,
+    deleteEpisodeVariables
+  >(DELETE_EPISODE_MUTATION, {
+    onCompleted: onDeleteEpisodeCompleted,
+  });
+
+  const onDelete = () => {
+    setEpisodeDelete(true);
+    setOpen(false);
+    if (episodeDelete) {
+      deleteEpisodeMutation({
+        variables: {
+          deleteEpisodeInput: {
+            podcastId: +podcastId,
+            episodeId: +episodeId,
+          },
+        },
+      });
+    }
   };
 
   return (
@@ -239,6 +331,19 @@ export const EditEpisode = () => {
                 loading={uploading}
                 actionText="에피소드 수정하기"
               />
+              <div>
+                <div
+                  onClick={handleClickOpen}
+                  className="mt-1 py-3 text-red-500 font-light text-lg rounded-3xl border border-red-500 transition-colors flex justify-center items-center cursor-pointer hover:bg-red-400 hover:text-white"
+                >
+                  에피소드 삭제하기
+                </div>
+                <DeleteEpisodeBtn
+                  open={open}
+                  handleClose={handleClose}
+                  onDelete={onDelete}
+                />
+              </div>
               {updateEpisodeMutationResult?.updateEpisode.error && (
                 <FormError
                   errorMessage={updateEpisodeMutationResult.updateEpisode.error}
