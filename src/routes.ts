@@ -14,6 +14,7 @@ const routes = {
   editPodcast: "/edit-podcast/:id",
   addEpisode: "/add-podcast/:id/add-episode",
   editEpisode: "/podcast/:podcastId/edit-episode/:episodeId",
+  addPromotion: "/add-promotion/:id",
 };
 
 export default routes;

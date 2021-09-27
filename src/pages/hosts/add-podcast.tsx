@@ -87,6 +87,7 @@ export const AddPodcast = () => {
                   coverImg: imageUrl,
                   id: id,
                   title,
+                  isPromoted: false,
                   __typename: "Podcast",
                 },
                 ...queryResult.myPodcasts.podcasts,
@@ -110,15 +111,12 @@ export const AddPodcast = () => {
     }
   );
 
-  const { data: categoryData, loading: categoryLoading } =
-    useQuery<allCategories>(ALL_CATEGORIES_QUERY);
+  const { data: categoryData } = useQuery<allCategories>(ALL_CATEGORIES_QUERY);
 
   const { register, formState, handleSubmit, getValues } = useForm<IFormProps>({
     mode: "all",
     defaultValues: {
-      categoryName: categoryLoading
-        ? "카테고리를 선택하세요"
-        : categoryData?.allCategories.categories![0].name,
+      categoryName: "교양",
     },
   });
 

@@ -9,9 +9,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LikeButton } from "../../components/like-button";
 import { SubButton } from "../../components/sub-button";
 import { EpisodeDetailList } from "../../components/episode-detail-list";
-import { playVar, episodeUrlVar, episodeIdVar } from "../../apollo";
+import {
+  playVar,
+  episodeUrlVar,
+  episodeIdVar,
+  coverImgUrlVar,
+} from "../../apollo";
 import { LISTENED_EPISODE_QUERY } from "../../components/episode-list";
 import { listenedEpisode } from "../../__generated__/listenedEpisode";
+import { episodeTitleVar, playingVar } from "../../apollo";
 import {
   getEpisode,
   getEpisodeVariables,
@@ -68,16 +74,21 @@ export const Episode = () => {
 
   const onPlay = () => {
     playVar(true);
-    if (episodeData?.getEpisode.episode?.id) {
-      episodeIdVar(episodeData?.getEpisode.episode?.id);
-    }
+    playingVar(true);
+    episodeIdVar(episodeData?.getEpisode.episode?.id);
     if (episodeData?.getEpisode.episode?.episodeUrl) {
       episodeUrlVar(episodeData?.getEpisode.episode?.episodeUrl);
     }
+    if (episodeData?.getPodcast.podcast?.coverImg) {
+      coverImgUrlVar(episodeData.getPodcast.podcast.coverImg);
+    }
+    episodeTitleVar(episodeData?.getEpisode.episode?.title);
   };
 
   const onStop = () => {
     playVar(false);
+    playingVar(false);
+    episodeIdVar(0);
   };
 
   const { data: listenedEpisodeData } = useQuery<listenedEpisode>(
@@ -85,7 +96,7 @@ export const Episode = () => {
   );
 
   return (
-    <div className="mt-32 lg:mt-24 w-full lg:h-screen">
+    <div className="mt-32 lg:mt-24 w-full lg:h-screen lg:mb-20">
       {episodeLoading ? (
         <div className="mt-64 flex justify-center items-center">
           <Logo logoFile={spinner} option={"w-32"} />
@@ -189,7 +200,7 @@ export const Episode = () => {
                   />
                 </div>
               </div>
-              <div className="bg-gray-100 mt-5 flex items-center justify-between ">
+              <div className="bg-gray-100 mt-5 flex items-center justify-between">
                 <Link
                   to={`/podcast/${episodeData?.getPodcast.podcast?.id}`}
                   className="w-full"

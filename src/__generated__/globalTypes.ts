@@ -46,6 +46,11 @@ export interface CreatePodcastInput {
   categoryImg?: string | null;
 }
 
+export interface CreatePromotionImgInput {
+  id: number;
+  promotionImage?: string | null;
+}
+
 export interface CreateReviewInput {
   title: string;
   text: string;

@@ -22,6 +22,7 @@ import { MyPodcast } from "../pages/hosts/my-podcast";
 import { EditEpisode } from "../pages/hosts/edit-episode";
 import { EditPodcast } from "../pages/hosts/edit-podcast";
 import { EpisodePlayer } from "../components/episode-player";
+import { AddPromotion } from "../pages/hosts/add-promotion";
 
 const commonRoutes = [
   { path: routes.editProfile, component: <EditProfile /> },
@@ -45,6 +46,7 @@ const hostRoutes = [
   { path: routes.editPodcast, component: <EditPodcast /> },
   { path: routes.addEpisode, component: <AddEpisode /> },
   { path: routes.editEpisode, component: <EditEpisode /> },
+  { path: routes.addPromotion, component: <AddPromotion /> },
 ];
 
 export const LoggedInRouter = () => {

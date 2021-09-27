@@ -17,6 +17,7 @@ import { myPodcasts_myPodcasts_podcasts } from "../../__generated__/myPodcasts";
 import { DeletePodcastBtn } from "../../components/delete-podcast-btn";
 import { myPodcast, myPodcastVariables } from "../../__generated__/myPodcast";
 import routes from "../../routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const MY_PODCAST_QUERY = gql`
   query myPodcast(
@@ -29,6 +30,7 @@ export const MY_PODCAST_QUERY = gql`
       error
       podcast {
         ...PodcastParts
+        isPromoted
         episodes {
           ...EpisodeParts
         }
@@ -153,6 +155,14 @@ export const MyPodcast = () => {
       ) : (
         <>
           <div className="md:max-w-5xl mx-auto">
+            {podcastData?.myPodcast.podcast?.isPromoted && (
+              <div className="flex justify-center items-center text-sky-600 animate-bounce my-2">
+                <div className="mx-2">
+                  <FontAwesomeIcon icon={["far", "check-circle"]} />
+                </div>
+                <div>프로모션 진행 중입니다</div>
+              </div>
+            )}
             <div className="flex flex-col items-start justify-center lg:flex-row lg:items-start lg:justify-start lg:w-full">
               <div className="flex items-center justify-center w-full lg:w-2/5">
                 <img
@@ -178,12 +188,14 @@ export const MyPodcast = () => {
                       </div>
                     </div>
                   </Link>
-                  <div className="lg:mx-6 text-sm mx-1 lg:text-base px-3 lg:px-4 py-2 bg-amber-600  rounded-xl lg:rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
-                    <div className="grid grid-row-2 justify-items-center lg:flex">
-                      <div>프로모션</div>
-                      <div className="lg:ml-1">구매</div>
+                  <Link to={`/add-promotion/${id}`}>
+                    <div className="lg:mx-6 text-sm mx-1 lg:text-base px-3 lg:px-4 py-2 bg-amber-600  rounded-xl lg:rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
+                      <div className="grid grid-row-2 justify-items-center lg:flex">
+                        <div>프로모션</div>
+                        <div className="lg:ml-1">구매</div>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                   <Link to={`/edit-podcast/${id}`}>
                     <div className="flex flex-col  lg:mx-6 text-sm mx-1 lg:text-base px-3 lg:px-4 py-2 bg-green-500  rounded-xl lg:rounded-3xl text-white cursor-pointer hover:opacity-70 transition-opacity">
                       <div className="grid grid-row-2 justify-items-center lg:flex">
@@ -203,9 +215,9 @@ export const MyPodcast = () => {
                           <div> 삭제</div>
                         </div>
                         <DeletePodcastBtn
-                          open={open}
-                          onDelete={onDelete}
                           handleClose={handleClose}
+                          onDelete={onDelete}
+                          open={open}
                         />
                       </div>
                     </div>

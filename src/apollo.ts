@@ -12,7 +12,10 @@ export const isLoggedInVar = makeVar(Boolean(token));
 export const authTokenVar = makeVar(token);
 
 export const episodeUrlVar = makeVar("");
+export const coverImgUrlVar = makeVar("");
+export const episodeTitleVar = makeVar("");
 export const playVar = makeVar(false);
+export const playingVar = makeVar(true);
 export const episodeIdVar = makeVar(0);
 
 export const logUserIn = (token: string) => {

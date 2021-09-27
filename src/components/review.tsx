@@ -79,7 +79,7 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
           },
         },
       });
-      console.log(reviewResults);
+
       if (reviewResults) {
         client.writeQuery({
           query: PODCAST_QUERY,

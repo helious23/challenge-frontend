@@ -15,8 +15,8 @@ import {
 } from "../../__generated__/updatePodcast";
 import { ALL_CATEGORIES_QUERY } from "./add-podcast";
 import { allCategories } from "../../__generated__/allCategories";
-import { myPodcast_myPodcast_podcast } from "../../__generated__/myPodcast";
 import { MY_PODCAST_INFO } from "./edit-episode";
+import { myPodcastInfo_myPodcast_podcast } from "../../__generated__/myPodcastInfo";
 import {
   myPodcastInfo,
   myPodcastInfoVariables,
@@ -47,7 +47,7 @@ export const EditPodcast = () => {
   const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const [coverImg, setCoverImg] = useState("");
-  const [podcast, setPodcast] = useState<myPodcast_myPodcast_podcast>();
+  const [podcast, setPodcast] = useState<myPodcastInfo_myPodcast_podcast>();
   const { id } = useParams<IParams>();
 
   const { register, formState, handleSubmit, getValues, setValue } =
@@ -69,7 +69,7 @@ export const EditPodcast = () => {
 
   useEffect(() => {
     if (myPodcastData) {
-      let result: myPodcast_myPodcast_podcast;
+      let result: myPodcastInfo_myPodcast_podcast;
       const findData = myPodcastData.myPodcast.podcast;
       result = {
         ...findData!,
@@ -107,7 +107,7 @@ export const EditPodcast = () => {
           },
         },
       });
-
+      console.log(queryResult);
       if (queryResult) {
         client.writeQuery({
           query: MY_PODCAST_QUERY,

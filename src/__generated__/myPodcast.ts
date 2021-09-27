@@ -32,6 +32,7 @@ export interface myPodcast_myPodcast_podcast {
   coverImg: string;
   description: string | null;
   category: myPodcast_myPodcast_podcast_category | null;
+  isPromoted: boolean;
   episodes: myPodcast_myPodcast_podcast_episodes[];
 }
 

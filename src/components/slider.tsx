@@ -1,6 +1,8 @@
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import { promotionPodcastQuery_promotionPocasts_results } from "../__generated__/promotionPodcastQuery";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 interface ISliderProps {
   results: promotionPodcastQuery_promotionPocasts_results[] | null | undefined;
