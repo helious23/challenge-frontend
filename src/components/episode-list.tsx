@@ -76,9 +76,6 @@ export const EpisodeList: React.FC<IEpisodeListProps> = ({ episodes, id }) => {
                         icon={["far", "check-circle"]}
                         className={`text-lg mr-2 text-gray-600 opacity-70`}
                       />
-                      <div className="text-xs text-gray-500 hidden lg:block">
-                        청취한 에피소드 입니다
-                      </div>
                     </div>
                     <FontAwesomeIcon
                       icon={["fas", "headphones-alt"]}
@@ -95,7 +92,7 @@ export const EpisodeList: React.FC<IEpisodeListProps> = ({ episodes, id }) => {
               <div className="border-t border-gray-200 w-full mt-5"></div>
             </Link>
           ))
-          .sort()}
+          .sort((a, b) => +b.key! - +a.key!)}
     </div>
   );
 };

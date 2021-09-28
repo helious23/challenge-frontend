@@ -129,7 +129,7 @@ export const EpisodePlayer = () => {
             alt={episodeTitle}
             className="w-16 h-16 rounded-lg"
           />
-          <div className="hidden lg:line-clamp-2 lg:text-base text-gray-700 font-light opacity-80 lg:mx-3 lg:h-12">
+          <div className="hidden lg:line-clamp-2 text-base text-gray-700 font-light opacity-80 h-12 max-w-max mx-auto text-center">
             {episodeTitle}
           </div>
         </div>
@@ -151,7 +151,7 @@ export const EpisodePlayer = () => {
         </div>
         <div className="flex-col lg:w-96 h-full w-full px-5">
           <div className="lg:hidden flex h-16 w-full justify-center items-center">
-            <div className="text-sm text-gray-700 font-light opacity-80 line-clamp-2 w-full">
+            <div className="text-sm text-gray-700 font-light opacity-80 line-clamp-2 w-full text-center">
               {episodeTitle}
             </div>
           </div>
@@ -223,7 +223,7 @@ export const EpisodePlayer = () => {
 
         <div
           onClick={onClose}
-          className="flex justify-start items-start h-20 text-gray-500 hover:text-sky-500 cursor-pointer"
+          className="flex justify-start items-start text-gray-500 hover:text-sky-500 cursor-pointer mb-16"
         >
           <FontAwesomeIcon icon={["far", "times-circle"]} className="text-sm" />
         </div>
