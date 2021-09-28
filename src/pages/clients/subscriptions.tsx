@@ -6,6 +6,7 @@ import gql from "graphql-tag";
 import { PODCAST_FRAGMENT } from "../../fragment";
 import { useQuery } from "@apollo/client";
 import { mySubscriptions } from "../../__generated__/mySubscriptions";
+import { NoSubscription } from "./no-subscription";
 
 export const MY_SUBSCRIPTIONS_QUERY = gql`
   query mySubscriptions {
@@ -26,7 +27,9 @@ export const Subscriptions = () => {
   return (
     <div className="mt-32 lg:mt-28 mx-5">
       <PageTitle title={"구독중인 팟캐스트"} />
-      {loading ? (
+      {data?.mySubscriptions.podcasts?.length === 0 ? (
+        <NoSubscription />
+      ) : loading ? (
         <div className="mt-64 flex justify-center items-center">
           <Logo logoFile={spinner} option={"w-32"} />
         </div>

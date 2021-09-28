@@ -1,4 +1,3 @@
-import { podcastsDetailQuery } from "../__generated__/podcastsDetailQuery";
 import btnSpinner from "../images/btn-spinner.svg";
 import { useForm } from "react-hook-form";
 import { FormError } from "./form-error";
@@ -8,6 +7,7 @@ import { Logo } from "./logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMe } from "../hooks/useMe";
 import { PODCAST_QUERY } from "../pages/clients/podcast-detail";
+import { podcastsDetailQuery } from "../__generated__/podcastsDetailQuery";
 import {
   createReview,
   createReviewVariables,
@@ -282,10 +282,20 @@ export const Review: React.FC<IReviewProps> = ({ podcastData, id }) => {
                   </div>
                 </div>
                 <div className="flex items-center text-xs text-gray-400">
-                  <div>{review.createdAt.split("T")[0]}</div>
+                  <div className="flex">
+                    <div>{review.createdAt.split("T")[0].split("-")[0]}-</div>
+                    <div>{review.createdAt.split("T")[0].split("-")[1]}-</div>
+                    <div>
+                      {+review.createdAt.split("T")[1].split(":")[0] + 9 > 24
+                        ? +review.createdAt.split("T")[0].split("-")[2] + 1
+                        : review.createdAt.split("T")[0].split("-")[2]}
+                    </div>
+                  </div>
                   <div className="ml-1">
-                    {+review.createdAt.split("T")[1].split(":")[0] + 9}:
-                    {review.createdAt.split("T")[1].split(":")[1]}
+                    {+review.createdAt.split("T")[1].split(":")[0] + 9 > 24
+                      ? +review.createdAt.split("T")[1].split(":")[0] + 9 - 24
+                      : +review.createdAt.split("T")[1].split(":")[0] + 9}
+                    :{review.createdAt.split("T")[1].split(":")[1]}
                   </div>
                 </div>
               </div>

@@ -25,6 +25,26 @@ export interface myPodcast_myPodcast_podcast_episodes {
   episodeUrl: string | null;
 }
 
+export interface myPodcast_myPodcast_podcast_reviews_reviewer {
+  __typename: "User";
+  id: number;
+  email: string;
+}
+
+export interface myPodcast_myPodcast_podcast_reviews {
+  __typename: "Review";
+  id: number;
+  createdAt: any;
+  title: string;
+  text: string;
+  reviewer: myPodcast_myPodcast_podcast_reviews_reviewer | null;
+}
+
+export interface myPodcast_myPodcast_podcast_subscriber {
+  __typename: "User";
+  email: string;
+}
+
 export interface myPodcast_myPodcast_podcast {
   __typename: "Podcast";
   id: number;
@@ -34,6 +54,8 @@ export interface myPodcast_myPodcast_podcast {
   category: myPodcast_myPodcast_podcast_category | null;
   isPromoted: boolean;
   episodes: myPodcast_myPodcast_podcast_episodes[];
+  reviews: myPodcast_myPodcast_podcast_reviews[];
+  subscriber: myPodcast_myPodcast_podcast_subscriber[];
 }
 
 export interface myPodcast_myPodcast {

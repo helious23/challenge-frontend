@@ -11,14 +11,15 @@ import { Logo } from "../../components/logo";
 import spinner from "../../images/spinner.svg";
 import { useState } from "react";
 import { PodcastInfo } from "../../components/podcast-info";
-import {
-  podcastsDetailQuery,
-  podcastsDetailQueryVariables,
-} from "../../__generated__/podcastsDetailQuery";
+
 import { Review } from "../../components/review";
 import { EpisodeList } from "../../components/episode-list";
 import { SubButton } from "../../components/sub-button";
 import { LikeButton } from "../../components/like-button";
+import {
+  podcastsDetailQuery,
+  podcastsDetailQueryVariables,
+} from "../../__generated__/podcastsDetailQuery";
 
 interface IPodcastParams {
   id: string;

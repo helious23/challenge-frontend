@@ -1,7 +1,11 @@
 import { useParams, Link, useHistory } from "react-router-dom";
 import { gql, useQuery, useMutation, useApolloClient } from "@apollo/client";
 import { PageTitle } from "../../components/page-title";
-import { EPISODE_FRAGMENT, PODCAST_FRAGMENT } from "../../fragment";
+import {
+  EPISODE_FRAGMENT,
+  PODCAST_FRAGMENT,
+  REVIEW_FRAGMENT,
+} from "../../fragment";
 import { Logo } from "../../components/logo";
 import spinner from "../../images/spinner.svg";
 import { PodcastInfo } from "../../components/podcast-info";
@@ -34,6 +38,12 @@ export const MY_PODCAST_QUERY = gql`
         episodes {
           ...EpisodeParts
         }
+        reviews {
+          ...ReviewParts
+        }
+        subscriber {
+          email
+        }
       }
     }
     countSubscriptions(input: $countSubscriptionsInput) {
@@ -45,6 +55,7 @@ export const MY_PODCAST_QUERY = gql`
   }
   ${PODCAST_FRAGMENT}
   ${EPISODE_FRAGMENT}
+  ${REVIEW_FRAGMENT}
 `;
 
 const DELETE_PODCAST_MUTATION = gql`
@@ -72,6 +83,27 @@ export const MyPodcast = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const [episodeView, setEpisodeView] = useState(true);
+  const [reviewView, setReviewView] = useState(false);
+  const [subscriberView, setSubscriberView] = useState(false);
+
+  const onEpisodeView = () => {
+    setEpisodeView(true);
+    setReviewView(false);
+    setSubscriberView(false);
+  };
+  const onReviewView = () => {
+    setReviewView(true);
+    setEpisodeView(false);
+    setSubscriberView(false);
+  };
+
+  const onSubscriberView = () => {
+    setSubscriberView(true);
+    setReviewView(false);
+    setEpisodeView(false);
+  };
+
   const { data: podcastData, loading } = useQuery<
     myPodcast,
     myPodcastVariables
@@ -225,21 +257,178 @@ export const MyPodcast = () => {
                 </div>
                 <div className="mt-10 w-full mb-32">
                   <div>
-                    {podcastData?.myPodcast.podcast?.episodes.length === 0 ? (
-                      <div className="flex flex-col justify-center items-center">
-                        <h2 className="font-semibold text-2xl mb-3 mt-10">
-                          등록된 에피소드가 없습니다
-                        </h2>
-                        <h4 className="font-medium text-base mb-5">
-                          다채로운 에피소드를 등록하세요!
-                        </h4>
+                    <div className="flex cursor-pointer">
+                      <div
+                        onClick={onEpisodeView}
+                        className={`p-2 transition-colors mx-2 ${
+                          episodeView
+                            ? "border-b-4  border-sky-500"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        에피소드
                       </div>
-                    ) : (
-                      <EpisodeList
-                        id={podcastData?.myPodcast.podcast?.id}
-                        episodes={podcastData?.myPodcast.podcast?.episodes}
-                      />
-                    )}
+                      <div
+                        onClick={onReviewView}
+                        className={`p-2 transition-colors mx-2 ${
+                          reviewView
+                            ? "border-b-4  border-sky-500"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        댓글
+                      </div>
+                      <div
+                        onClick={onSubscriberView}
+                        className={`p-2 transition-colors ${
+                          subscriberView
+                            ? "border-b-4  border-sky-500"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        구독자
+                      </div>
+                    </div>
+                    <div className={episodeView ? "mt-5" : "hidden"}>
+                      {podcastData?.myPodcast.podcast?.episodes.length === 0 ? (
+                        <div className="flex flex-col justify-center items-center">
+                          <h2 className="font-semibold text-2xl mb-3 mt-10">
+                            등록된 에피소드가 없습니다
+                          </h2>
+                          <h4 className="font-medium text-base mb-5">
+                            다채로운 에피소드를 등록하세요!
+                          </h4>
+                        </div>
+                      ) : (
+                        <EpisodeList
+                          id={podcastData?.myPodcast.podcast?.id}
+                          episodes={podcastData?.myPodcast.podcast?.episodes}
+                        />
+                      )}
+                    </div>
+                    <div className={reviewView ? "mt-5" : "hidden"}>
+                      <div className="mt-5">
+                        {podcastData?.myPodcast.podcast?.reviews.length ===
+                        0 ? (
+                          <div className="flex flex-col justify-center items-center">
+                            <h2 className="font-semibold text-2xl mb-3 mt-10">
+                              등록된 댓글이 없습니다
+                            </h2>
+                            <h4 className="font-medium text-base mb-5">
+                              다양한 댓글을 기대하세요!
+                            </h4>
+                          </div>
+                        ) : (
+                          podcastData?.myPodcast.podcast?.reviews
+                            .map((review, index) => (
+                              <div key={index} className="mt-5 mx-2">
+                                <div className="flex justify-between w-full">
+                                  <div className="flex items-center justify-center">
+                                    <div className="flex mr-5 text-sm">
+                                      <div className="text-sky-600">
+                                        {review.reviewer?.email.split("@")[0]}
+                                      </div>
+                                      <span className="ml-2 text-gray-600">
+                                        님
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center text-xs text-gray-400">
+                                    <div className="flex">
+                                      <div>
+                                        {
+                                          review.createdAt
+                                            .split("T")[0]
+                                            .split("-")[0]
+                                        }
+                                        -
+                                      </div>
+                                      <div>
+                                        {
+                                          review.createdAt
+                                            .split("T")[0]
+                                            .split("-")[1]
+                                        }
+                                        -
+                                      </div>
+                                      <div>
+                                        {+review.createdAt
+                                          .split("T")[1]
+                                          .split(":")[0] +
+                                          9 >
+                                        24
+                                          ? +review.createdAt
+                                              .split("T")[0]
+                                              .split("-")[2] + 1
+                                          : review.createdAt
+                                              .split("T")[0]
+                                              .split("-")[2]}
+                                      </div>
+                                    </div>
+                                    <div className="ml-1">
+                                      {+review.createdAt
+                                        .split("T")[1]
+                                        .split(":")[0] +
+                                        9 >
+                                      24
+                                        ? +review.createdAt
+                                            .split("T")[1]
+                                            .split(":")[0] +
+                                          9 -
+                                          24
+                                        : +review.createdAt
+                                            .split("T")[1]
+                                            .split(":")[0] + 9}
+                                      :
+                                      {
+                                        review.createdAt
+                                          .split("T")[1]
+                                          .split(":")[1]
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex justify-between">
+                                  <div className="mt-0.5 text-base text-gray-700">
+                                    {review.title}
+                                  </div>
+                                </div>
+                                <div className="mt-2 py-2 px-2 bg-gray-100 rounded-lg">
+                                  <div className="font-extralight text-gray-700">
+                                    {review.text}
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                            .reverse()
+                        )}
+                      </div>
+                    </div>
+                    <div className={subscriberView ? "mt-5" : "hidden"}>
+                      {podcastData?.myPodcast.podcast?.subscriber.length ===
+                      0 ? (
+                        <div className="flex flex-col justify-center items-center">
+                          <h2 className="font-semibold text-2xl mb-3 mt-10">
+                            구독중인 유저가 없습니다
+                          </h2>
+                          <h4 className="font-medium text-base mb-5">
+                            반짝이는 아이디어로 구독자를 모집하세요!
+                          </h4>
+                        </div>
+                      ) : (
+                        <div>
+                          {podcastData?.myPodcast.podcast?.subscriber.map(
+                            (user, index) => (
+                              <div key={index} className="flex text-sky-700">
+                                <ul>
+                                  <li>· {user.email}</li>
+                                </ul>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

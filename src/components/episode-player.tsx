@@ -7,7 +7,7 @@ import {
   coverImgUrlVar,
 } from "../apollo";
 import gql from "graphql-tag";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { episodeTitleVar, playingVar } from "../apollo";
 import { Logo } from "./logo";
@@ -16,6 +16,7 @@ import {
   markEpisodeAsPlayedVariables,
 } from "../__generated__/markEpisodeAsPlayed";
 import btnSpinner from "../images/btn-spinner-blue.svg";
+import { Duration } from "./duration";
 
 const MARKED_EPISODE = gql`
   mutation markEpisodeAsPlayed($input: MarkEpisodeAsPlayedInput!) {
@@ -44,9 +45,10 @@ export const EpisodePlayer = () => {
   const player = useRef<ReactPlayer>(null);
 
   const [volume, setVolume] = useState(0.7);
-  const [played, setPlayed] = useState(0);
   const [seeking, setSeeking] = useState(false);
   const [progress, setProgress] = useState<IProgressState>();
+  const [playingTime, setPlayingTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const [markEpisodeMutation] = useMutation<
     markEpisodeAsPlayed,
@@ -65,7 +67,6 @@ export const EpisodePlayer = () => {
 
   const handlePlaying = () => {
     playing ? playingVar(false) : playingVar(true);
-    console.log(playing);
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +74,7 @@ export const EpisodePlayer = () => {
   };
 
   const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlayed(parseFloat(e.currentTarget.value));
+    setPlayingTime(parseFloat(e.currentTarget.value));
   };
 
   const handleSeekMouseDown = (
@@ -93,7 +94,6 @@ export const EpisodePlayer = () => {
   const onProgress = (progress: IProgressState) => {
     if (!seeking) {
       setProgress(progress);
-      console.log(progress.loaded);
     }
   };
 
@@ -103,20 +103,33 @@ export const EpisodePlayer = () => {
     episodeIdVar(0);
   };
 
+  const handleDuration = (duration: number) => {
+    setDuration(duration);
+  };
+
+  useEffect(() => {
+    const onPlayingTime = () => {
+      if (progress) {
+        setPlayingTime(progress?.played);
+      }
+    };
+    onPlayingTime();
+  }, [progress]);
+
   return (
     <div
-      className={`px-5 w-full h-24 flex-col justify-center items-center bg-white border-t border-gray-300 fixed bottom-0 shadow-inner ${
+      className={`px-5 w-full h-24 flex-col justify-between items-center bg-white border-t border-gray-300 fixed bottom-0 shadow-inner ${
         play ? "" : "hidden"
       }`}
     >
-      <div className="flex items-center justify-center h-full w-full">
-        <div className="flex">
+      <div className="flex items-center justify-between lg:justify-center h-full w-full">
+        <div className="flex items-center lg:w-4/12 w-24">
           <img
             src={coverImgUrl}
             alt={episodeTitle}
-            className="w-20 h-20 rounded-lg"
+            className="w-16 h-16 rounded-lg"
           />
-          <div className="hidden lg:text-base text-gray-700 font-light opacity-80 lg:mx-3 lg:w-full lg:flex lg:justify-start lg:items-center">
+          <div className="hidden lg:line-clamp-2 lg:text-base text-gray-700 font-light opacity-80 lg:mx-3 lg:h-12">
             {episodeTitle}
           </div>
         </div>
@@ -125,41 +138,55 @@ export const EpisodePlayer = () => {
           onClick={handlePlaying}
         >
           {playing ? (
-            <FontAwesomeIcon icon={["far", "pause-circle"]} />
+            <FontAwesomeIcon
+              icon={["far", "pause-circle"]}
+              className="text-5xl text-sky-500 hover:opacity-70 transition-opacity cursor-pointer"
+            />
           ) : (
-            <FontAwesomeIcon icon={["far", "play-circle"]} />
+            <FontAwesomeIcon
+              icon={["far", "play-circle"]}
+              className="text-5xl text-sky-500 hover:opacity-70 transition-opacity cursor-pointer"
+            />
           )}
         </div>
-        <div className="flex-col w-40 lg:w-96 h-full mx-5">
-          <div className="lg:hidden flex h-16 justify-center items-center">
-            <div className="text-sm text-gray-700 font-light opacity-80">
+        <div className="flex-col lg:w-96 h-full w-full px-5">
+          <div className="lg:hidden flex h-16 w-full justify-center items-center">
+            <div className="text-sm text-gray-700 font-light opacity-80 line-clamp-2 w-full">
               {episodeTitle}
             </div>
           </div>
-          <div className="opacity-0 fixed flex items-center h-3 lg:h-24">
-            <input
-              type="range"
-              min={0}
-              max={0.999999}
-              step="any"
-              value={played}
-              onMouseDown={handleSeekMouseDown}
-              onChange={handleSeekChange}
-              onMouseUp={handleSeekMouseUp}
-              className=" w-40 lg:w-96 appearance-none cursor-pointer"
-            />
+          <div className="lg:flex lg:flex-col lg:justify-center lg:items-center lg:h-full">
+            <div className=" flex items-center h-3 lg:h-5 w-full">
+              <input
+                type="range"
+                min={0}
+                max={0.999999}
+                step="any"
+                value={playingTime}
+                onMouseDown={handleSeekMouseDown}
+                onChange={handleSeekChange}
+                onMouseUp={handleSeekMouseUp}
+                className="w-full lg:w-96 cursor-pointer"
+              />
+            </div>
+
+            <div className="hidden lg:block w-full">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Duration
+                    seconds={duration * playingTime}
+                    options={"ml-3 text-sm text-sky-600 font-light"}
+                  />
+                </div>
+                <div>
+                  <Duration
+                    seconds={duration}
+                    options={"mr-3 text-sm font-light text-gray-700 opacity-70"}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div className=" flex items-center h-3 lg:h-24">
-            <input
-              type="range"
-              min={0}
-              max={0.999999}
-              step="any"
-              value={progress?.played}
-              className=" w-40 lg:w-96 cursor-pointer"
-            />
-          </div>
-          <div>{progress?.playedSeconds}</div>
         </div>
         <div className="text-3xl lg:hidden block" onClick={handlePlaying}>
           {progress?.loaded && progress.loaded >= 0 && progress.loaded < 0.1 ? (
@@ -167,16 +194,22 @@ export const EpisodePlayer = () => {
               <Logo logoFile={btnSpinner} option={"w-5"} />
             </div>
           ) : playing ? (
-            <FontAwesomeIcon icon={["far", "pause-circle"]} />
+            <FontAwesomeIcon
+              icon={["far", "pause-circle"]}
+              className="text-4xl text-sky-500 hover:opacity-70 transition-opacity cursor-pointer"
+            />
           ) : (
-            <FontAwesomeIcon icon={["far", "play-circle"]} />
+            <FontAwesomeIcon
+              icon={["far", "play-circle"]}
+              className="text-4xl text-sky-500 hover:opacity-70 transition-opacity cursor-pointer"
+            />
           )}
         </div>
 
         <div className="hidden lg:block">
           <FontAwesomeIcon
             icon={["fas", "volume-up"]}
-            className="text-xl mr-3"
+            className="text-xl mr-3 text-gray-600"
           />
           <input
             type="range"
@@ -190,7 +223,7 @@ export const EpisodePlayer = () => {
 
         <div
           onClick={onClose}
-          className="fixed bottom-16 right-3 justify-center items-center text-gray-600 hover:text-sky-500 cursor-pointer"
+          className="flex justify-start items-start h-20 text-gray-500 hover:text-sky-500 cursor-pointer"
         >
           <FontAwesomeIcon icon={["far", "times-circle"]} className="text-sm" />
         </div>
@@ -205,6 +238,7 @@ export const EpisodePlayer = () => {
         onProgress={onProgress}
         volume={volume}
         ref={player}
+        onDuration={handleDuration}
       />
     </div>
   );

@@ -7,6 +7,7 @@ import gql from "graphql-tag";
 import { PODCAST_FRAGMENT } from "../../fragment";
 import { useQuery } from "@apollo/client";
 import { myLikes } from "../../__generated__/myLikes";
+import { NoLike } from "./no-like";
 
 export const MY_LIKES_QUERY = gql`
   query myLikes {
@@ -27,7 +28,9 @@ export const Likes = () => {
   return (
     <div className="mt-32 lg:mt-28 mx-5">
       <PageTitle title={"좋아요"} />
-      {loading ? (
+      {data?.myLikes.likes && data.myLikes.likes.length === 0 ? (
+        <NoLike />
+      ) : loading ? (
         <div className="mt-64 flex justify-center items-center">
           <Logo logoFile={spinner} option={"w-32"} />
         </div>

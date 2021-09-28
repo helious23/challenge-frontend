@@ -95,7 +95,7 @@ export const EpisodeList: React.FC<IEpisodeListProps> = ({ episodes, id }) => {
               <div className="border-t border-gray-200 w-full mt-5"></div>
             </Link>
           ))
-          .reverse()}
+          .sort()}
     </div>
   );
 };
