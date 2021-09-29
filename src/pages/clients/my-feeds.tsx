@@ -30,7 +30,7 @@ export const MyFeeds = () => {
 
   return (
     <div className="mt-32 lg:mt-28 mx-5">
-      <PageTitle title={"구독중인 팟캐스트"} />
+      <PageTitle title={"새로 업데이트된 에피소드"} />
       {data?.myFeeds.podcasts?.length === 0 ? (
         <NoSubscription />
       ) : loading ? (
