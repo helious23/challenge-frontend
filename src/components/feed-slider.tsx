@@ -89,7 +89,7 @@ export const FeedSlider: React.FC<ISliderProps> = ({
                   key={episode.id}
                   to={`/podcast/${podcastId}/episode/${episode.id}`}
                 >
-                  <div className="flex justify-around items-center mx-2 my-5 h-32 rounded-lg shadow-lg transform hover:bg-sky-100 hover:shadow-lg hover:-translate-y-2 transition-transform mt-2">
+                  <div className="flex justify-around items-center mx-2 my-5 h-32 rounded-lg shadow-lg border border-gray-100 hover:border-sky-200 transform hover:bg-sky-200 hover:-translate-y-2 transition-transform mt-2">
                     <div className="">
                       <img
                         src={coverImg}
@@ -97,7 +97,7 @@ export const FeedSlider: React.FC<ISliderProps> = ({
                         className="cursor-pointer rounded-lg w-24"
                       />
                     </div>
-                    <div className="h-20 lg:w-7/12 w-8/12 flex justify-center items-center line-clamp-3 px-1 text-base">
+                    <div className="h-18 lg:w-7/12 w-8/12 flex justify-center items-center line-clamp-3 px-1 text-base">
                       <div className="">{episode.title}</div>
                     </div>
                   </div>

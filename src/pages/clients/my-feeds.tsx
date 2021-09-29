@@ -49,7 +49,7 @@ export const MyFeeds = () => {
                   key={index}
                   className="flex flex-col justify-center items-center lg:block"
                 >
-                  <div className="mt-10 text-xl text-gray-700 font-normal">
+                  <div className="mt-20 text-xl text-gray-700 font-normal">
                     {podcast.title}
                   </div>
                   <div className="w-10/12 lg:w-full h-40">
