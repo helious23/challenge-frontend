@@ -69,7 +69,7 @@ export const SideMenu: React.FC<ISideMenuProps> = ({
                     <div className="flex justify-center items-center">
                       <FontAwesomeIcon
                         icon={["fas", "home"]}
-                        className="text-3xl text-gray-500 group-hover:text-sky-500 transition-colors"
+                        className="text-4xl text-gray-500 group-hover:text-sky-500 transition-colors"
                       />
                     </div>
                     <div className="text-center text-sm group-hover:text-sky-500 transition-colors text-gray-700 font-light mt-1">
@@ -79,16 +79,18 @@ export const SideMenu: React.FC<ISideMenuProps> = ({
                 </div>
               </div>
               <div className="mx-1 my-2">
-                <div className="flex-col group">
-                  <div className="flex justify-center items-center">
-                    <FontAwesomeIcon
-                      icon={["fas", "trophy"]}
-                      className="text-3xl text-amber-500 group-hover:text-sky-500 transition-colors"
-                    />
-                  </div>
-                  <div className="text-center text-sm group-hover:text-sky-500 transition-colors text-gray-700 font-light mt-1">
-                    순위
-                  </div>
+                <div className="flex-col group" onClick={onMenuClick}>
+                  <Link to={routes.myFeeds}>
+                    <div className="flex justify-center items-center">
+                      <FontAwesomeIcon
+                        icon={["fas", "rss-square"]}
+                        className="text-4xl text-amber-500 group-hover:text-sky-500 transition-colors"
+                      />
+                    </div>
+                    <div className="text-center text-sm group-hover:text-sky-500 transition-colors text-gray-700 font-light mt-1">
+                      피드
+                    </div>
+                  </Link>
                 </div>
               </div>
               <div className="mx-1 my-2">
@@ -97,7 +99,7 @@ export const SideMenu: React.FC<ISideMenuProps> = ({
                     <div className="flex justify-center items-center">
                       <FontAwesomeIcon
                         icon={["fas", "podcast"]}
-                        className="text-3xl text-purple-500 group-hover:text-sky-500 transition-colors"
+                        className="text-4xl text-purple-500 group-hover:text-sky-500 transition-colors"
                       />
                     </div>
                     <div className="text-center text-sm group-hover:text-sky-500 transition-colors text-gray-700 font-light mt-1">
@@ -112,7 +114,7 @@ export const SideMenu: React.FC<ISideMenuProps> = ({
                     <div className="flex justify-center items-center">
                       <FontAwesomeIcon
                         icon={["fas", "heart"]}
-                        className="text-3xl text-red-500 group-hover:text-sky-500 transition-colors"
+                        className="text-4xl text-red-500 group-hover:text-sky-500 transition-colors"
                       />
                     </div>
                     <div className="text-center text-sm group-hover:text-sky-500 transition-colors text-gray-700 font-light mt-1">
@@ -127,7 +129,7 @@ export const SideMenu: React.FC<ISideMenuProps> = ({
                     <div className="flex justify-center items-center">
                       <FontAwesomeIcon
                         icon={["fas", "search"]}
-                        className="text-3xl group-hover:text-sky-500 transition-colors"
+                        className="text-4xl group-hover:text-sky-500 transition-colors"
                       />
                     </div>
                     <div className="text-center text-sm group-hover:text-sky-500 transition-colors text-gray-700 font-light mt-1">
@@ -142,7 +144,7 @@ export const SideMenu: React.FC<ISideMenuProps> = ({
                     <div className="flex justify-center items-center">
                       <FontAwesomeIcon
                         icon={["fas", "list-ul"]}
-                        className="text-3xl group-hover:text-sky-500 transition-colors text-pink-800"
+                        className="text-4xl group-hover:text-sky-500 transition-colors text-pink-800"
                       />
                     </div>
                     <div className="text-center text-sm group-hover:text-sky-500 transition-colors text-gray-700 font-light mt-1">

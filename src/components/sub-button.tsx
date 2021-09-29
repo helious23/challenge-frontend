@@ -11,6 +11,7 @@ import gql from "graphql-tag";
 import { ME_QUERY, useMe } from "../hooks/useMe";
 import { PODCAST_QUERY } from "../pages/clients/podcast-detail";
 import { MY_SUBSCRIPTIONS_QUERY } from "../pages/clients/subscriptions";
+import { MY_FEED_QUERY } from "../pages/clients/my-feeds";
 
 interface ISubButtonProps {
   id: string;
@@ -153,6 +154,40 @@ export const SubButton: React.FC<ISubButtonProps> = ({
                   )
                 : [
                     ...mySubscriptionsQuery.mySubscriptions.podcasts,
+                    {
+                      __typename: "Podcast",
+                      id: +id,
+                      title,
+                      coverImg,
+                      category: {
+                        __typename: "Category",
+                        name: categoryName,
+                        slug: categorySlug,
+                      },
+                      description,
+                    },
+                  ],
+            },
+          },
+        });
+      }
+
+      const myFeedsQuery = client.readQuery({
+        query: MY_FEED_QUERY,
+      });
+
+      if (myFeedsQuery) {
+        client.writeQuery({
+          query: MY_FEED_QUERY,
+          data: {
+            myFeeds: {
+              ...myFeedsQuery.myFeeds,
+              podcasts: onSubscription
+                ? myFeedsQuery.myFeeds.podcasts.filter(
+                    (sub: ISubscriptions) => sub.id !== +id
+                  )
+                : [
+                    ...myFeedsQuery.myFeeds.podcasts,
                     {
                       __typename: "Podcast",
                       id: +id,

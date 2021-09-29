@@ -71,20 +71,19 @@ export const PromitionSlider: React.FC<ISliderProps> = ({ results }) => {
     <div className="mt-10 py-10">
       {
         <Slider {...settings}>
-          {results?.map((podcast) =>
-            podcast.promotionImg ? (
-              <Link key={podcast.id} to={`/podcast/${podcast.id}`}>
-                <div className="flex justify-center items-center">
-                  <img
-                    src={podcast.promotionImg}
-                    alt={podcast.title}
-                    className="w-11/12 cursor-pointer rounded-lg"
-                  />
-                </div>
-              </Link>
-            ) : (
-              ""
-            )
+          {results?.map(
+            (podcast) =>
+              podcast.promotionImg && (
+                <Link key={podcast.id} to={`/podcast/${podcast.id}`}>
+                  <div className="flex justify-center items-center">
+                    <img
+                      src={podcast.promotionImg}
+                      alt={podcast.title}
+                      className="w-11/12 cursor-pointer rounded-lg"
+                    />
+                  </div>
+                </Link>
+              )
           )}
         </Slider>
       }

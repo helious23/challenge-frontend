@@ -23,6 +23,7 @@ import { EditEpisode } from "../pages/hosts/edit-episode";
 import { EditPodcast } from "../pages/hosts/edit-podcast";
 import { EpisodePlayer } from "../components/episode-player";
 import { AddPromotion } from "../pages/hosts/add-promotion";
+import { MyFeeds } from "../pages/clients/my-feeds";
 
 const commonRoutes = [
   { path: routes.editProfile, component: <EditProfile /> },
@@ -37,6 +38,7 @@ const clientRoutes = [
   { path: routes.episode, component: <Episode /> },
   { path: routes.subscriptions, component: <Subscriptions /> },
   { path: routes.likes, component: <Likes /> },
+  { path: routes.myFeeds, component: <MyFeeds /> },
 ];
 
 const hostRoutes = [

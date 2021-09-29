@@ -15,6 +15,7 @@ const routes = {
   addEpisode: "/add-podcast/:id/add-episode",
   editEpisode: "/podcast/:podcastId/edit-episode/:episodeId",
   addPromotion: "/add-promotion/:id",
+  myFeeds: "/my-feeds",
 };
 
 export default routes;
