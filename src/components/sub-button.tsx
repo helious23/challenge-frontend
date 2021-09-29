@@ -12,6 +12,7 @@ import { ME_QUERY, useMe } from "../hooks/useMe";
 import { PODCAST_QUERY } from "../pages/clients/podcast-detail";
 import { MY_SUBSCRIPTIONS_QUERY } from "../pages/clients/subscriptions";
 import { MY_FEED_QUERY } from "../pages/clients/my-feeds";
+import { podcastsDetailQuery_getPodcast_podcast_episodes } from "../__generated__/podcastsDetailQuery";
 
 interface ISubButtonProps {
   id: string;
@@ -20,6 +21,7 @@ interface ISubButtonProps {
   categoryName: string | undefined;
   categorySlug: string | undefined;
   description: string | null | undefined;
+  episodes?: podcastsDetailQuery_getPodcast_podcast_episodes[];
   options?: string;
 }
 
@@ -46,6 +48,7 @@ export const SubButton: React.FC<ISubButtonProps> = ({
   categoryName,
   categorySlug,
   description,
+  episodes,
 }) => {
   const [subLoading, setSubLoading] = useState(false);
   const client = useApolloClient();
@@ -199,6 +202,7 @@ export const SubButton: React.FC<ISubButtonProps> = ({
                         slug: categorySlug,
                       },
                       description,
+                      episodes: episodes ? [...episodes] : null,
                     },
                   ],
             },

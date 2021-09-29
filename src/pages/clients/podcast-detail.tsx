@@ -131,6 +131,7 @@ export const PodcastDetail = () => {
                       podcastData?.getPodcast.podcast?.category?.slug
                     }
                     description={podcastData?.getPodcast.podcast?.description}
+                    episodes={podcastData?.getPodcast.podcast?.episodes}
                     options={"w-32 lg:w-44"}
                   />
                   <LikeButton
